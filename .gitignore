@@ -6,7 +6,7 @@
 hs_err_pid*
 
 ## Robovm
-robovm-build/
+robovm-launch/
 
 ## GWT
 war/
@@ -52,7 +52,7 @@ local.properties
 
 ## NetBeans
 **/nbproject/private/
-build/
+launch/
 nbbuild/
 dist/
 nbdist/
