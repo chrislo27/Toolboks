@@ -25,7 +25,12 @@ object SysOutPiper {
 
     private lateinit var stream: FileOutputStream
 
+    private @Volatile var piped: Boolean = false
+
     fun pipe(game: ToolboksGame) {
+        if (piped)
+            return
+        piped = true
         oldOut = System.out
         oldErr = System.err
 
