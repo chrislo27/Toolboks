@@ -5,36 +5,52 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import io.github.chrislo27.toolboks.registry.AssetRegistry
 import io.github.chrislo27.toolboks.registry.ScreenRegistry
+import io.github.chrislo27.toolboks.tick.TickController
+import io.github.chrislo27.toolboks.tick.TickHandler
 import io.github.chrislo27.toolboks.version.Version
 
-public abstract class ToolboksGame(val version: Version, val fixedSize: Pair<Float, Float>? = null) : Game() {
+public abstract class ToolboksGame(val version: Version,
+                                   val emulatedSize: Pair<Int, Int>, val lockToEmulatedSize: Boolean) : Game(), TickHandler {
 
+    lateinit var originalResolution: Pair<Int, Int>
+        private set
     val defaultCamera: OrthographicCamera = OrthographicCamera()
+    val tickController: TickController = TickController()
 
     override fun create() {
+        originalResolution = Pair(Gdx.graphics.width, Gdx.graphics.height)
         resetCamera()
+        tickController.init(this)
     }
 
     override fun render() {
         defaultCamera.update()
+        tickController.update()
         super.render()
     }
 
-    fun resetCamera() {
-        if (fixedSize != null) {
-            defaultCamera.setToOrtho(false, fixedSize.first, fixedSize.second)
-        } else {
-            defaultCamera.setToOrtho(false, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-        }
+    override fun tickUpdate(tickController: TickController) {
     }
 
     override fun resize(width: Int, height: Int) {
         super.resize(width, height)
+        resetCamera()
+        if (!lockToEmulatedSize) {
+            // reload fonts
+        }
     }
 
     override fun dispose() {
         super.dispose()
         ScreenRegistry.dispose()
         AssetRegistry.dispose()
+    }
+
+    fun resetCamera() {
+        if (lockToEmulatedSize) {
+            defaultCamera.setToOrtho(false, emulatedSize.first.toFloat(), emulatedSize.second.toFloat())
+        } else {
+            defaultCamera.setToOrtho(false, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+        }
     }
 }
