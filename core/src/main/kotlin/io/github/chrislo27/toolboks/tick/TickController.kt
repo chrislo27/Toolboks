@@ -1,7 +1,6 @@
 package io.github.chrislo27.toolboks.tick
 
 import io.github.chrislo27.toolboks.ToolboksGame
-import kotlin.system.measureNanoTime
 
 
 class TickController {
@@ -75,15 +74,18 @@ class TickController {
         if (!inited || nanoPerTick < 1)
             return
 
-        var nanoDiff: Long = System.nanoTime() - lastNano
-        while (nanoDiff >= nanoPerTick) {
-            val executionTime: Long =
-                    measureNanoTime {
-                        tickHandlers.forEach { it.tickUpdate(this) }
-                    }
-            nanoDiff -= executionTime
-            tickNumber++
+        val nanoDiff: Long = System.nanoTime() - lastNano
+        if (nanoDiff >= nanoPerTick) {
+            val ticksToExecute: Long = nanoDiff / lastNano
+
+            (1..ticksToExecute).forEach {
+                tickHandlers.forEach {
+                    it.tickUpdate(this)
+                }
+            }
         }
+
+        lastNano = System.nanoTime()
     }
 
 }
