@@ -48,5 +48,8 @@ class FreeTypeFont(val file: FileHandle, val defaultWindowSize: Pair<Int, Int>,
         font?.dispose()
         (font?.data as? Disposable)?.dispose()
         generator?.dispose()
+
+        font = null
+        generator = null
     }
 }
