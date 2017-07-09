@@ -78,7 +78,7 @@ class TickController {
         if (nanoDiff >= nanoPerTick) {
             val ticksToExecute: Long = nanoDiff / lastNano
 
-            (1..ticksToExecute).forEach {
+            for (i in 1..ticksToExecute) {
                 tickHandlers.forEach {
                     it.tickUpdate(this)
                 }
