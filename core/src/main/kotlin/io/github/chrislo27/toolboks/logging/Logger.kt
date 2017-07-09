@@ -8,7 +8,7 @@ open class Logger {
         get() = System.currentTimeMillis() - msTimeStarted
 
     enum class LogLevel {
-        NONE, DEBUG, INFO, WARN, ERROR
+        DEBUG, INFO, WARN, ERROR, NONE
     }
 
     var loggingLevel: LogLevel = LogLevel.DEBUG
@@ -28,25 +28,25 @@ open class Logger {
     }
 
     open fun debug(msg: String) {
-        if (loggingLevel.ordinal >= LogLevel.DEBUG.ordinal) {
+        if (loggingLevel.ordinal <= LogLevel.DEBUG.ordinal) {
             defaultPrint(LogLevel.DEBUG, msg)
         }
     }
 
     open fun info(msg: String) {
-        if (loggingLevel.ordinal >= LogLevel.INFO.ordinal) {
+        if (loggingLevel.ordinal <= LogLevel.INFO.ordinal) {
             defaultPrint(LogLevel.INFO, msg)
         }
     }
 
     open fun warn(msg: String) {
-        if (loggingLevel.ordinal >= LogLevel.WARN.ordinal) {
+        if (loggingLevel.ordinal <= LogLevel.WARN.ordinal) {
             defaultPrint(LogLevel.WARN, msg)
         }
     }
 
     open fun error(msg: String) {
-        if (loggingLevel.ordinal >= LogLevel.ERROR.ordinal) {
+        if (loggingLevel.ordinal <= LogLevel.ERROR.ordinal) {
             defaultPrint(LogLevel.ERROR, msg)
         }
     }
