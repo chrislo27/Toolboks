@@ -42,6 +42,7 @@ class FreeTypeFont(val file: FileHandle, val defaultWindowSize: Pair<Int, Int>,
 
         generator = FreeTypeFontGenerator(file)
         font = generator!!.generateFont(parameter)
+        this.afterLoad()
     }
 
     override fun dispose() {
