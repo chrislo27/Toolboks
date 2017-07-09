@@ -32,4 +32,14 @@ class FontHandler(val game: ToolboksGame) : Disposable {
         fonts.values.forEach(FreeTypeFont::load)
     }
 
+    fun loadFiltered(filter: (Map.Entry<String, FreeTypeFont>) -> Boolean) {
+        fonts.filter(filter).map(Map.Entry<String, FreeTypeFont>::value).forEach(FreeTypeFont::load)
+    }
+
+    fun loadUnloaded() {
+        loadFiltered {
+            !it.value.isLoaded()
+        }
+    }
+
 }

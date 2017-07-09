@@ -25,6 +25,8 @@ class FreeTypeFont(val file: FileHandle, val defaultWindowSize: Pair<Int, Int>,
         return this
     }
 
+    fun isLoaded(): Boolean = font != null
+
     fun load() {
         dispose()
 

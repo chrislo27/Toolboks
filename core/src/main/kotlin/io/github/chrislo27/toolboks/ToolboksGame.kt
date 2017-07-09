@@ -18,12 +18,12 @@ import io.github.chrislo27.toolboks.version.Version
 import kotlin.system.measureNanoTime
 
 abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
-                                   val version: Version,
-                                   val emulatedSize: Pair<Int, Int>, val lockToEmulatedSize: Boolean)
+                            val version: Version,
+                            val emulatedSize: Pair<Int, Int>, val lockToEmulatedSize: Boolean)
     : Game(), TickHandler {
 
-    protected val defaultFontKey: String = "toolboks_default_font"
-    protected val defaultBorderedFontKey: String = "toolboks_default_bordered_font"
+    protected val defaultFontKey: String = "${Toolboks.TOOLBOKS_ASSET_PREFIX}default_font"
+    protected val defaultBorderedFontKey: String = "${Toolboks.TOOLBOKS_ASSET_PREFIX}default_bordered_font"
 
     lateinit var originalResolution: Pair<Int, Int>
         private set
