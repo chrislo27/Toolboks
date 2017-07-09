@@ -3,6 +3,7 @@ package io.github.chrislo27.toolboks
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import io.github.chrislo27.toolboks.logging.Logger
 import io.github.chrislo27.toolboks.logging.SysOutPiper
 import io.github.chrislo27.toolboks.registry.AssetRegistry
@@ -18,8 +19,10 @@ public abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
 
     lateinit var originalResolution: Pair<Int, Int>
         private set
-    val defaultCamera: OrthographicCamera = OrthographicCamera()
     val tickController: TickController = TickController()
+    val defaultCamera: OrthographicCamera = OrthographicCamera()
+    lateinit var batch: SpriteBatch
+        private set
 
     /**
      * Should include the version
@@ -35,14 +38,23 @@ public abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
         originalResolution = Pair(Gdx.graphics.width, Gdx.graphics.height)
         resetCamera()
         tickController.init(this)
+
+        batch = SpriteBatch()
+    }
+
+    open fun preRender() {
+        defaultCamera.update()
+        tickController.update()
+    }
+
+    open fun postRender() {
+
     }
 
     override fun render() {
-        defaultCamera.update()
-        tickController.update()
+        preRender()
         super.render()
-
-
+        postRender()
     }
 
     override fun tickUpdate(tickController: TickController) {
@@ -58,6 +70,9 @@ public abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
 
     override fun dispose() {
         super.dispose()
+
+        batch.dispose()
+
         ScreenRegistry.dispose()
         AssetRegistry.dispose()
     }
