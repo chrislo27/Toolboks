@@ -30,13 +30,7 @@ class FreeTypeFont(val file: FileHandle, val defaultWindowSize: Pair<Int, Int>,
     fun load() {
         dispose()
 
-        val scale: Float = run {
-            if (Gdx.graphics.width <= Gdx.graphics.height) {
-                return@run Gdx.graphics.width.toFloat() / defaultWindowSize.first
-            } else {
-                return@run Gdx.graphics.height.toFloat() / defaultWindowSize.second
-            }
-        }
+        val scale: Float = Math.min(Gdx.graphics.width.toFloat() / defaultWindowSize.first, Gdx.graphics.height.toFloat() / defaultWindowSize.second)
         parameter.size = Math.round(fontSize * scale)
         parameter.borderWidth = borderSize * scale
 

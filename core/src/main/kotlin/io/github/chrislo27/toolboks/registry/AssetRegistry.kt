@@ -1,6 +1,7 @@
 package io.github.chrislo27.toolboks.registry
 
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.utils.Disposable
 import io.github.chrislo27.toolboks.Toolboks
 import io.github.chrislo27.toolboks.lazysound.LazySound

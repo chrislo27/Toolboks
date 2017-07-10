@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.Align
@@ -27,6 +29,13 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
                             val version: Version,
                             val emulatedSize: Pair<Int, Int>, val lockToEmulatedSize: Boolean)
     : Game(), TickHandler {
+
+    companion object {
+
+        lateinit var smallTexture: Texture
+            private set
+
+    }
 
     val versionString: String = version.toString()
     protected val defaultFontKey: String = "${Toolboks.TOOLBOKS_ASSET_PREFIX}default_font"
@@ -61,6 +70,12 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
         resetCamera()
         tickController.init(this)
 
+        val pixmap: Pixmap = Pixmap(1, 1, Pixmap.Format.RGBA8888)
+        pixmap.setColor(1f, 1f, 1f, 1f)
+        pixmap.fill()
+        smallTexture = Texture(pixmap)
+        pixmap.dispose()
+
         batch = SpriteBatch()
         fonts = FontHandler(this)
         fonts[defaultFontKey] = createDefaultFont()
@@ -93,26 +108,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
     }
 
     open fun postRender() {
-        if (Toolboks.debugMode) {
-            val font = defaultBorderedFont
-            batch.begin()
-            font.data.setScale(0.75f)
 
-            val fps = Gdx.graphics.framesPerSecond
-            val string =
-                    """FPS: [${if (fps <= 10) "RED" else if (fps < 30) "YELLOW" else "WHITE"}]$fps[]
-Debug mode: ${Toolboks.DEBUG_KEY_NAME}
-  While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N
-Version: $versionString
-Memory usage: ${NumberFormat.getIntegerInstance().format(Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(MemoryUtils.maxMemory)} KB
-
-${if (screen is ToolboksScreen<*>) (screen as ToolboksScreen<*>).getDebugString() else ""}"""
-
-            font.drawCompressed(batch, string, 8f, Gdx.graphics.height - 8f, Gdx.graphics.width - 16f, Align.left)
-
-            font.data.setScale(1f)
-            batch.end()
-        }
     }
 
     override fun render() {
@@ -120,6 +116,29 @@ ${if (screen is ToolboksScreen<*>) (screen as ToolboksScreen<*>).getDebugString(
             preRender()
             super.render()
             postRender()
+
+            if (Toolboks.debugMode) {
+                val font = defaultBorderedFont
+                batch.begin()
+                font.data.setScale(0.75f)
+
+                val fps = Gdx.graphics.framesPerSecond
+                val string =
+                        """FPS: [${if (fps <= 10) "RED" else if (fps < 30) "YELLOW" else "WHITE"}]$fps[]
+Debug mode: ${Toolboks.DEBUG_KEY_NAME}
+  While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N
+Version: $versionString
+Memory usage: ${NumberFormat.getIntegerInstance().format(
+                                Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
+                                MemoryUtils.maxMemory)} KB
+
+${if (screen is ToolboksScreen<*>) (screen as ToolboksScreen<*>).getDebugString() else ""}"""
+
+                font.drawCompressed(batch, string, 8f, Gdx.graphics.height - 8f, Gdx.graphics.width - 16f, Align.left)
+
+                font.data.setScale(1f)
+                batch.end()
+            }
         }
     }
 
@@ -143,6 +162,7 @@ ${if (screen is ToolboksScreen<*>) (screen as ToolboksScreen<*>).getDebugString(
 
         batch.dispose()
         fonts.dispose()
+        smallTexture.dispose()
 
         ScreenRegistry.dispose()
         AssetRegistry.dispose()
