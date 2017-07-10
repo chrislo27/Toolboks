@@ -17,8 +17,8 @@ import io.github.chrislo27.toolboks.registry.AssetRegistry
 import io.github.chrislo27.toolboks.registry.ScreenRegistry
 import io.github.chrislo27.toolboks.tick.TickController
 import io.github.chrislo27.toolboks.tick.TickHandler
-import io.github.chrislo27.toolboks.util.FontUtils.drawCompressed
 import io.github.chrislo27.toolboks.util.MemoryUtils
+import io.github.chrislo27.toolboks.util.gdxutils.drawCompressed
 import io.github.chrislo27.toolboks.version.Version
 import java.text.NumberFormat
 import kotlin.system.measureNanoTime
