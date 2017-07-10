@@ -99,11 +99,13 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
             font.data.setScale(0.75f)
 
             val fps = Gdx.graphics.framesPerSecond
-            val string = """FPS: [${if (fps <= 10) "RED" else if (fps <= 30) "YELLOW" else "WHITE"}]$fps[]
+            val string =
+                    """FPS: [${if (fps <= 10) "RED" else if (fps < 30) "YELLOW" else "WHITE"}]$fps[]
 Debug mode: ${Toolboks.DEBUG_KEY_NAME}
   While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N
 Version: $versionString
 Memory usage: ${NumberFormat.getIntegerInstance().format(Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(MemoryUtils.maxMemory)} KB
+
 ${if (screen is ToolboksScreen<*>) (screen as ToolboksScreen<*>).getDebugString() else ""}"""
 
             font.drawCompressed(batch, string, 8f, Gdx.graphics.height - 8f, Gdx.graphics.width - 16f, Align.left)
