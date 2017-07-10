@@ -9,8 +9,8 @@ public abstract class ToolboksScreen<out G : ToolboksGame>(public val main: G) :
 
     abstract fun tickUpdate()
 
-    fun getDebugStrings(list: MutableList<String>) {
-
+    fun getDebugString(): String? {
+        return null
     }
 
 }
