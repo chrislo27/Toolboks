@@ -3,6 +3,7 @@ package io.github.chrislo27.toolboks
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
@@ -38,8 +39,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
     }
 
     val versionString: String = version.toString()
-    protected val defaultFontKey: String = "${Toolboks.TOOLBOKS_ASSET_PREFIX}default_font"
-    protected val defaultBorderedFontKey: String = "${Toolboks.TOOLBOKS_ASSET_PREFIX}default_bordered_font"
+    val defaultFontKey: String = "${Toolboks.TOOLBOKS_ASSET_PREFIX}default_font"
+    val defaultBorderedFontKey: String = "${Toolboks.TOOLBOKS_ASSET_PREFIX}default_bordered_font"
 
     lateinit var originalResolution: Pair<Int, Int>
         private set
@@ -54,6 +55,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
         get() = fonts[defaultFontKey].font!!
     val defaultBorderedFont: BitmapFont
         get() = fonts[defaultBorderedFontKey].font!!
+
+    val inputMultiplexer = InputMultiplexer()
 
     /**
      * Should include the version
@@ -81,6 +84,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
         fonts[defaultFontKey] = createDefaultFont()
         fonts[defaultBorderedFontKey] = createDefaultBorderedFont()
         fonts.loadAll()
+
+        Gdx.input.inputProcessor = inputMultiplexer
     }
 
     open fun preRender() {
@@ -100,7 +105,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
             }
         }
         if (screen != null) {
-            (screen as? ToolboksScreen<*>)?.renderUpdate()
+            (screen as? ToolboksScreen<*, *>)?.renderUpdate()
         }
 
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
@@ -132,7 +137,7 @@ Memory usage: ${NumberFormat.getIntegerInstance().format(
                                 Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
                                 MemoryUtils.maxMemory)} KB
 
-${if (screen is ToolboksScreen<*>) (screen as ToolboksScreen<*>).getDebugString() else ""}"""
+${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugString() else ""}"""
 
                 font.drawCompressed(batch, string, 8f, Gdx.graphics.height - 8f, Gdx.graphics.width - 16f, Align.left)
 
@@ -144,7 +149,7 @@ ${if (screen is ToolboksScreen<*>) (screen as ToolboksScreen<*>).getDebugString(
 
     override fun tickUpdate(tickController: TickController) {
         if (screen != null) {
-            (screen as? ToolboksScreen<*>)?.tickUpdate()
+            (screen as? ToolboksScreen<*, *>)?.tickUpdate()
         }
     }
 

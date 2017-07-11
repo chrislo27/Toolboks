@@ -43,3 +43,28 @@ fun BitmapFont.drawCompressed(batch: SpriteBatch, text: String, x: Float, y: Flo
 
     font.data.scaleX = oldScaleX
 }
+
+fun BitmapFont.drawConstrained(batch: SpriteBatch, text: String, x: Float, y: Float, width: Float, height: Float,
+                               align: Int) {
+    val font = this
+    val textWidth = this.getTextWidth(text)
+    val textHeight = this.getTextHeight(text, width, true)
+    val oldScaleX = font.data.scaleX
+    val oldScaleY = font.data.scaleY
+    val oldLineHeight = font.data.down
+
+    if (textWidth > width) {
+        font.data.scaleX = (width / textWidth) * oldScaleX
+    }
+
+    if (textHeight > height) {
+        font.data.scaleY = (height / textHeight) * oldScaleY
+        font.data.down = (height / textHeight) * oldLineHeight
+    }
+
+    font.draw(batch, text, x, y, width, align, true)
+
+    font.data.scaleX = oldScaleX
+    font.data.scaleY = oldScaleY
+    font.data.down = oldLineHeight
+}

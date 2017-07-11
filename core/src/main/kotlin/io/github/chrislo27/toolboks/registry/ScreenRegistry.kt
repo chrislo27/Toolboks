@@ -9,21 +9,21 @@ import io.github.chrislo27.toolboks.ToolboksScreen
 
 object ScreenRegistry : Disposable {
 
-    val screens: Map<String, ToolboksScreen<*>> = mutableMapOf()
+    val screens: Map<String, ToolboksScreen<*, *>> = mutableMapOf()
 
     @Suppress("UNCHECKED_CAST")
-    inline operator fun <reified G : ToolboksGame> get(key: String): ToolboksScreen<G>? {
-        return screens[key] as ToolboksScreen<G>?
+    inline operator fun <reified G : ToolboksGame> get(key: String): ToolboksScreen<G, *>? {
+        return screens[key] as ToolboksScreen<G, *>?
     }
 
-    inline fun <reified G : ToolboksGame> getNonNull(key: String): ToolboksScreen<*> =
+    inline fun <reified G : ToolboksGame> getNonNull(key: String): ToolboksScreen<*, *> =
             get<G>(key) ?: throw IllegalArgumentException("No screen found with key $key")
 
-    operator fun plusAssign(pair: Pair<String, ToolboksScreen<*>>) {
+    operator fun plusAssign(pair: Pair<String, ToolboksScreen<*, *>>) {
         add(pair.first, pair.second)
     }
 
-    fun add(key: String, screen: ToolboksScreen<*>) {
+    fun add(key: String, screen: ToolboksScreen<*, *>) {
         if (key.startsWith( Toolboks.TOOLBOKS_ASSET_PREFIX)) {
             throw IllegalArgumentException("$key starts with Toolboks asset prefix, which is ${Toolboks.TOOLBOKS_ASSET_PREFIX}")
         }
@@ -33,7 +33,7 @@ object ScreenRegistry : Disposable {
         (screens as MutableMap)[key] = screen
     }
 
-    internal fun addToolboks(keyWithoutPrefix: String, screen: ToolboksScreen<*>) {
+    internal fun addToolboks(keyWithoutPrefix: String, screen: ToolboksScreen<*, *>) {
         if (screens.containsKey(Toolboks.TOOLBOKS_ASSET_PREFIX + keyWithoutPrefix)) {
             throw IllegalArgumentException("Already contains key " + Toolboks.TOOLBOKS_ASSET_PREFIX + keyWithoutPrefix)
         }
