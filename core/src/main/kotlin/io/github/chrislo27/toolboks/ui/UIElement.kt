@@ -164,12 +164,10 @@ abstract class UIElement<S : ToolboksScreen<*, *>>(val parent: UIElement<S>?,
             } else {
                 realX = (parentX) + (width / 2) + screenX * width + pixelX
             }
-
-            println(this)
         }
 
         override fun toString(): String {
-            return "${parent} UIRectangle(screenX=$screenX, screenY=$screenY, screenWidth=$screenWidth, screenHeight=$screenHeight, pixelX=$pixelX, pixelY=$pixelY, pixelWidth=$pixelWidth, pixelHeight=$pixelHeight, realX=$realX, realY=$realY, realWidth=$realWidth, realHeight=$realHeight)"
+            return "UIRectangle(screenX=$screenX, screenY=$screenY, screenWidth=$screenWidth, screenHeight=$screenHeight, pixelX=$pixelX, pixelY=$pixelY, pixelWidth=$pixelWidth, pixelHeight=$pixelHeight, realX=$realX, realY=$realY, realWidth=$realWidth, realHeight=$realHeight)"
         }
 
     }
