@@ -18,6 +18,10 @@ open class Stage<S : ToolboksScreen<*, *>>(parent: UIElement<S>?, val camera: Or
         this.updatePositions()
     }
 
+    override fun removeChild(element: UIElement<S>): Boolean {
+        return elements.remove(element)
+    }
+
     override fun render(screen: S, batch: SpriteBatch) {
         elements.filter(UIElement<S>::visible).forEach {
             it.render(screen, batch)

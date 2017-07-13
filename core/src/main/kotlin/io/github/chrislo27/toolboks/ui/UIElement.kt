@@ -28,6 +28,10 @@ abstract class UIElement<S : ToolboksScreen<*, *>>(val parent: UIElement<S>?,
         }
     }
 
+    open fun removeChild(element: UIElement<S>): Boolean {
+        return false
+    }
+
     fun isMouseOver(): Boolean {
         return MathHelper.isPointIn(stage.camera.getInputX(), stage.camera.getInputY(), location.realX, location.realY,
                                     location.realWidth, location.realHeight)
