@@ -6,25 +6,51 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Disposable
 
 
-class LazySound(handle: FileHandle) : Disposable {
+class LazySound(val handle: FileHandle) : Disposable {
 
-	companion object {
-		var lazyLoad: Boolean = true
-	}
+    companion object {
+        var loadLazilyWithAssetManager: Boolean = true
+    }
 
-	val sound: Sound by lazy {
-//		val t = System.nanoTime()
-		val s = Gdx.audio.newSound(handle)
-		isLoaded = true
-//		println("loaded $handle in ${(System.nanoTime() - t) / 1000000f} ms")
-		return@lazy s
-	}
+    private @Volatile var backing: Sound? = null
+    @Volatile var disposedOf: Boolean = false
+        private set
 
-	var isLoaded: Boolean = false
-		private set
+    val sound: Sound
+        get() {
+            if (backing == null) {
+                load()
+            }
 
-	override fun dispose() {
-		if (isLoaded)
-			sound.dispose()
-	}
+            return backing!!
+        }
+
+    val isLoaded: Boolean
+        get() {
+            return backing != null && !disposedOf
+        }
+
+    fun load() {
+        if (disposedOf) {
+            error("Lazy sound already disposed of")
+        }
+        if (!isLoaded) {
+            backing = Gdx.audio.newSound(handle)
+        }
+    }
+
+    fun unload() {
+        if (isLoaded) {
+            synchronized(backing!!) {
+                backing!!.dispose()
+                backing = null
+            }
+        }
+    }
+
+    override fun dispose() {
+        unload()
+        disposedOf = true
+    }
+
 }

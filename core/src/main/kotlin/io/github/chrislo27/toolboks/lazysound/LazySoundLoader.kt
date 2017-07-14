@@ -20,7 +20,7 @@ class LazySoundLoader(resolver: FileHandleResolver) : SynchronousAssetLoader<Laz
 					  parameter: LazySoundLoaderParameter?): LazySound {
 		val ls = LazySound(file)
 
-		if (!LazySound.lazyLoad)
+		if (!LazySound.loadLazilyWithAssetManager)
 			ls.sound
 
 		return ls

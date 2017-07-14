@@ -48,7 +48,7 @@ object SysOutPiper {
         builder.append("Game Specifications:\n")
         builder.append("    Version: " + game.version.toString() + "\n")
         builder.append("    Application type: " + Gdx.app.type.toString() + "\n")
-        builder.append("    Lazy loading enabled: " + LazySound.lazyLoad + "\n")
+        builder.append("    Lazy loading enabled: " + LazySound.loadLazilyWithAssetManager + "\n")
 
         builder.append("\n")
 
