@@ -6,7 +6,9 @@ import io.github.chrislo27.toolboks.ToolboksScreen
 /**
  * A stage that disappears if you click and none of its children respond.
  */
-open class ContextMenu<S : ToolboksScreen<*, *>>(parent: UIElement<S>) : Stage<S>(parent.stage, parent.stage.camera) {
+open class ContextMenu<S : ToolboksScreen<*, *>> : Stage<S> {
+
+    constructor(parent: UIElement<S>) : super(parent.stage, parent.stage.camera)
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         val result = super.touchUp(screenX, screenY, pointer, button)

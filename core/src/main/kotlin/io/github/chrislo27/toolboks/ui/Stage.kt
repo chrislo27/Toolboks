@@ -6,17 +6,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import io.github.chrislo27.toolboks.ToolboksScreen
 
 
-open class Stage<S : ToolboksScreen<*, *>>(parent: UIElement<S>?, val camera: OrthographicCamera)
-    : UIElement<S>(parent, null), InputProcessor {
+open class Stage<S : ToolboksScreen<*, *>>
+    : UIElement<S>, InputProcessor {
 
-    override val stage: Stage<S>
-        get() = this
-    open val elements: MutableList<UIElement<S>> = mutableListOf()
+    val camera: OrthographicCamera
 
-    init {
+    constructor(parent: UIElement<S>?, camera: OrthographicCamera) : super(parent, null) {
+        this.camera = camera
+        this.elements = mutableListOf()
         this.location.set(screenWidth = 1f, screenHeight = 1f)
         this.updatePositions()
     }
+
+    override val stage: Stage<S>
+        get() = this
+    open val elements: MutableList<UIElement<S>>
 
     override fun removeChild(element: UIElement<S>): Boolean {
         return elements.remove(element)

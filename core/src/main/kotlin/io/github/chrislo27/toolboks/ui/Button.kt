@@ -5,10 +5,17 @@ import io.github.chrislo27.toolboks.ToolboksScreen
 import io.github.chrislo27.toolboks.util.gdxutils.fillRect
 
 
-open class Button<S : ToolboksScreen<*, *>>(override var palette: UIPalette, parent: UIElement<S>, stage: Stage<S>)
-    : UIElement<S>(parent, stage), Palettable {
+open class Button<S : ToolboksScreen<*, *>>
+    : UIElement<S>, Palettable {
 
-    val labels: List<Label<S>> = mutableListOf()
+    override var palette: UIPalette
+
+    constructor(palette: UIPalette, parent: UIElement<S>, stage: Stage<S>) : super(parent, stage) {
+        this.palette = palette
+        this.labels = mutableListOf()
+    }
+
+    val labels: List<Label<S>>
     var enabled = true
 
     fun addLabel(l: Label<S>) {

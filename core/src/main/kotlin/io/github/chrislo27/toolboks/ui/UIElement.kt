@@ -10,23 +10,29 @@ import io.github.chrislo27.toolboks.util.gdxutils.getInputX
 import io.github.chrislo27.toolboks.util.gdxutils.getInputY
 
 
-abstract class UIElement<S : ToolboksScreen<*, *>>(val parent: UIElement<S>?,
-                                                   private val parameterStage: Stage<S>?)
+abstract class UIElement<S : ToolboksScreen<*, *>>
     : InputProcessor {
+
+    val parent: UIElement<S>?
+    private val parameterStage: Stage<S>?
+
+    constructor(parent: UIElement<S>?, parameterStage: Stage<S>?) {
+        this.parent = parent
+        this.parameterStage = parameterStage
+        this.alignment = Align.bottomLeft
+        this.location = UIRectangle(0f, 0f, 1f, 1f, 0f, 0f, 0f, 0f)
+        if (parent != null) {
+        }
+    }
 
     open val stage: Stage<S>
         get() = parameterStage ?: error("Stage is null")
 
-    var alignment: Int = Align.bottomLeft
-    var location: UIRectangle = UIRectangle(0f, 0f, 1f, 1f, 0f, 0f, 0f, 0f)
+    var alignment: Int
+    var location: UIRectangle
     var visible: Boolean = true
     var wasClickedOn = false
         private set
-
-    init {
-        if (parent != null) {
-        }
-    }
 
     open fun removeChild(element: UIElement<S>): Boolean {
         return false

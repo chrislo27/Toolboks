@@ -10,11 +10,15 @@ import io.github.chrislo27.toolboks.util.gdxutils.getTextHeight
 import io.github.chrislo27.toolboks.util.gdxutils.getTextWidth
 
 
-open class TextLabel<S : ToolboksScreen<*, *>>(palette: UIPalette, parent: UIElement<S>, stage: Stage<S>)
-    : Label<S>(palette, parent, stage), Palettable {
+open class TextLabel<S : ToolboksScreen<*, *>>
+    : Label<S>, Palettable {
+
+    constructor(palette: UIPalette, parent: UIElement<S>, stage: Stage<S>) : super(palette, parent, stage) {
+        this.textAlign = Align.center
+    }
 
     var text: String = ""
-    var textAlign: Int = Align.center
+    var textAlign: Int
     var isLocalizationKey = true
     var textWrapping = true
     var background = false
