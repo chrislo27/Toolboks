@@ -57,7 +57,7 @@ object AssetRegistry : Disposable {
 
     fun addAssetLoader(loader: IAssetLoader) {
         assetLoaders += loader
-        val map = mutableMapOf<String, String>()
+        val map = mutableMapOf<String, Any>()
         loader.addUnmanagedAssets(map)
         val allStartingWithPrefix = map.keys.filter{ it.startsWith(Toolboks.TOOLBOKS_ASSET_PREFIX) }
         if (allStartingWithPrefix.isNotEmpty()) {
@@ -107,7 +107,7 @@ object AssetRegistry : Disposable {
 
         fun addManagedAssets(manager: AssetManager)
 
-        fun addUnmanagedAssets(assets: MutableMap<String, *>)
+        fun addUnmanagedAssets(assets: MutableMap<String, Any>)
 
     }
 
