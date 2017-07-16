@@ -67,7 +67,4 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
 
     }
 
-    override fun frameUpdate(screen: S) {
-    }
-
 }

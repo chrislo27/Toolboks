@@ -36,6 +36,7 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
     var visible: Boolean = true
     var wasClickedOn = false
         private set
+    var hoverTime: Float = 0f
 
     open fun removeChild(element: UIElement<S>): Boolean {
         return false
@@ -62,7 +63,13 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
     /**
      * Called each frame when the parent screen is the current screen, regardless of visibility
      */
-    abstract fun frameUpdate(screen: S)
+    open fun frameUpdate(screen: S) {
+        if (visible && isMouseOver()) {
+            hoverTime += Gdx.graphics.deltaTime
+        } else {
+            hoverTime = 0f
+        }
+    }
 
     /**
      * Called each tick when the parent screen is the current screen, regardless of visibility

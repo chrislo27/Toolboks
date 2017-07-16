@@ -77,6 +77,4 @@ open class TextLabel<S : ToolboksScreen<*, *>>
         getFont().data.setScale(oldScale)
     }
 
-    override fun frameUpdate(screen: S) {
-    }
 }

@@ -58,9 +58,6 @@ open class Button<S : ToolboksScreen<*, *>>
         }
     }
 
-    override fun frameUpdate(screen: S) {
-    }
-
     override fun onResize(width: Float, height: Float) {
         super.onResize(width, height)
         labels.forEach {
