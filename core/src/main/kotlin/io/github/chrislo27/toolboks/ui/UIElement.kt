@@ -1,11 +1,14 @@
 package io.github.chrislo27.toolboks.ui
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.Align
 import io.github.chrislo27.toolboks.ToolboksScreen
 import io.github.chrislo27.toolboks.util.MathHelper
+import io.github.chrislo27.toolboks.util.gdxutils.drawRect
 import io.github.chrislo27.toolboks.util.gdxutils.getInputX
 import io.github.chrislo27.toolboks.util.gdxutils.getInputY
 
@@ -80,6 +83,10 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
         }
 
         return false
+    }
+
+    open fun drawOutline(batch: SpriteBatch, camera: OrthographicCamera, lineThickness: Float = 1f) {
+        batch.drawRect(location.realX, location.realY, location.realWidth, location.realHeight, (camera.viewportWidth / Gdx.graphics.width) * lineThickness)
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {

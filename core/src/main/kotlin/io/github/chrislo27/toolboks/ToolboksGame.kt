@@ -102,6 +102,9 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
             if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
                 val nano = measureNanoTime(Localization::reloadAll)
                 Toolboks.LOGGER.debug("Reloaded I18N from files in ${nano / 1_000_000.0} ms")
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+                Toolboks.stageOutlines = !Toolboks.stageOutlines
+                Toolboks.LOGGER.debug("Toggled stage outlines to ${Toolboks.stageOutlines}")
             }
         }
         if (screen != null) {
@@ -131,13 +134,13 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
                 val string =
                         """FPS: [${if (fps <= 10) "RED" else if (fps < 30) "YELLOW" else "WHITE"}]$fps[]
 Debug mode: ${Toolboks.DEBUG_KEY_NAME}
-  While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N
+  While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N | S - Toggle stage outlines
 Version: $versionString
 Memory usage: ${NumberFormat.getIntegerInstance().format(
                                 Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
                                 MemoryUtils.maxMemory)} KB
 
-${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugString() else ""}"""
+${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugString() ?: "" else ""}"""
 
                 font.drawCompressed(batch, string, 8f, Gdx.graphics.height - 8f, Gdx.graphics.width - 16f, Align.left)
 
@@ -154,8 +157,8 @@ ${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugS
     }
 
     override fun resize(width: Int, height: Int) {
-        super.resize(width, height)
         resetCamera()
+        super.resize(width, height)
         if (!lockToEmulatedSize) {
             val nano = measureNanoTime(fonts::loadAll)
             Toolboks.LOGGER.info("Reloaded all ${fonts.fonts.size} fonts in ${nano / 1_000_000.0} ms")

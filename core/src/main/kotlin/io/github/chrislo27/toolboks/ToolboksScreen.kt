@@ -10,9 +10,20 @@ public abstract class ToolboksScreen<G : ToolboksGame, SELF : ToolboksScreen<G, 
     open val stage: Stage<SELF>? = null
 
     override fun render(delta: Float) {
-        main.batch.begin()
-        stage?.render(this as SELF, main.batch)
-        main.batch.end()
+        run {
+            val stage = this.stage ?: return@run
+            val batch = main.batch
+
+            batch.begin()
+            stage.render(this as SELF, batch)
+            if (Toolboks.stageOutlines) {
+                val old = batch.packedColor
+                batch.setColor(0f, 1f, 0f, 1f)
+                stage.drawOutline(batch, stage.camera)
+                batch.setColor(old)
+            }
+            batch.end()
+        }
     }
 
     open fun renderUpdate() {

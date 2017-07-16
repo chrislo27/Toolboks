@@ -88,7 +88,7 @@ object AssetRegistry : Disposable {
     }
 
     operator inline fun <reified T> get(key: String): T {
-        return manager.get(assetMap[key], T::class.java) ?:
+        return (unmanagedAssets[key] as T) ?: manager.get(assetMap[key], T::class.java) ?:
                 throw IllegalArgumentException(
                         if (manager.isLoaded(assetMap[key])) // this might never happen, actually
                             "Asset was wrong type: key $key, got ${T::class.java.canonicalName}," +

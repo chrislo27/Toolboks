@@ -1,6 +1,7 @@
 package io.github.chrislo27.toolboks.ui
 
 import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import io.github.chrislo27.toolboks.ToolboksScreen
@@ -29,6 +30,18 @@ open class Stage<S : ToolboksScreen<*, *>>
     override fun render(screen: S, batch: SpriteBatch) {
         elements.filter(UIElement<S>::visible).forEach {
             it.render(screen, batch)
+        }
+    }
+
+    override fun drawOutline(batch: SpriteBatch, camera: OrthographicCamera, lineThickness: Float) {
+        if (camera !== this.camera)
+            error("Camera passed in wasn't the stage's camera")
+        val old = batch.packedColor
+        batch.color = Color.ORANGE
+        super.drawOutline(batch, camera, lineThickness)
+        batch.setColor(old)
+        elements.forEach {
+            it.drawOutline(batch, this.camera, lineThickness)
         }
     }
 

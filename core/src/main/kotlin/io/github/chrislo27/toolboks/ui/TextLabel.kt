@@ -1,5 +1,6 @@
 package io.github.chrislo27.toolboks.ui
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.Align
 import io.github.chrislo27.toolboks.ToolboksScreen
@@ -28,6 +29,9 @@ open class TextLabel<S : ToolboksScreen<*, *>>
                 Localization[text]
             else
                 text
+    
+    open fun getFont(): BitmapFont =
+            palette.font
 
     fun setText(text: String, align: Int = this.textAlign, wrapping: Boolean = true,
                 isLocalization: Boolean = isLocalizationKey): TextLabel<S> {
@@ -49,11 +53,11 @@ open class TextLabel<S : ToolboksScreen<*, *>>
         val labelWidth = location.realWidth
         val labelHeight = location.realHeight
 
-        val textHeightWithWrap = palette.font.getTextHeight(text, labelWidth, true)
-        val textHeightNoWrap = palette.font.getTextHeight(text, labelWidth, false)
+        val textHeightWithWrap = getFont().getTextHeight(text, labelWidth, true)
+        val textHeightNoWrap = getFont().getTextHeight(text, labelWidth, false)
         val shouldWrap = textHeightWithWrap <= location.realHeight
         val textHeight = if (shouldWrap) textHeightWithWrap else textHeightNoWrap
-        val textWidth = palette.font.getTextWidth(text, labelWidth, shouldWrap)
+        val textWidth = getFont().getTextWidth(text, labelWidth, shouldWrap)
 
         val y: Float
         if ((textAlign and Align.top) == Align.top) {
@@ -64,13 +68,13 @@ open class TextLabel<S : ToolboksScreen<*, *>>
             y = location.realY + location.realHeight / 2 + textHeight / 2
         }
 
-        val oldColor = palette.font.color
-        val oldScale = palette.font.scaleX
-        palette.font.color = palette.textColor
-        palette.font.data.setScale(palette.fontScale)
-        palette.font.drawCompressed(batch, getRealText(), location.realX, y, labelWidth, textAlign)
-        palette.font.color = oldColor
-        palette.font.data.setScale(oldScale)
+        val oldColor = getFont().color
+        val oldScale = getFont().scaleX
+        getFont().color = palette.textColor
+        getFont().data.setScale(palette.fontScale)
+        getFont().drawCompressed(batch, getRealText(), location.realX, y, labelWidth, textAlign)
+        getFont().color = oldColor
+        getFont().data.setScale(oldScale)
     }
 
     override fun frameUpdate(screen: S) {

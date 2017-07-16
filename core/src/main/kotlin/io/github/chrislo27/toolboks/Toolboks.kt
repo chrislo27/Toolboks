@@ -14,5 +14,6 @@ object Toolboks {
     const val DEBUG_KEY: Int = Input.Keys.F8
     val DEBUG_KEY_NAME: String = Input.Keys.toString(DEBUG_KEY)
     var debugMode: Boolean = false
+    var stageOutlines: Boolean = false
 
 }
