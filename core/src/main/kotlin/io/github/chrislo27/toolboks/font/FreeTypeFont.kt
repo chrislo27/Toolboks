@@ -1,6 +1,5 @@
 package io.github.chrislo27.toolboks.font
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
@@ -27,10 +26,10 @@ class FreeTypeFont(val file: FileHandle, val defaultWindowSize: Pair<Int, Int>,
 
     fun isLoaded(): Boolean = font != null
 
-    fun load() {
+    fun load(width: Float, height: Float) {
         dispose()
 
-        val scale: Float = Math.min(Gdx.graphics.width.toFloat() / defaultWindowSize.first, Gdx.graphics.height.toFloat() / defaultWindowSize.second)
+        val scale: Float = Math.min(width / defaultWindowSize.first, height / defaultWindowSize.second)
         parameter.size = Math.round(fontSize * scale)
         parameter.borderWidth = borderSize * scale
 

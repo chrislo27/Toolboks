@@ -28,7 +28,7 @@ import kotlin.system.measureNanoTime
 
 abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
                             val version: Version,
-                            val emulatedSize: Pair<Int, Int>, val lockToEmulatedSize: Boolean)
+                            val emulatedSize: Pair<Int, Int>, val resizeAction: ResizeAction)
     : Game(), TickHandler {
 
     companion object {
@@ -83,7 +83,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
         fonts = FontHandler(this)
         fonts[defaultFontKey] = createDefaultFont()
         fonts[defaultBorderedFontKey] = createDefaultBorderedFont()
-        fonts.loadAll()
+        fonts.loadAll(defaultCamera.viewportWidth, defaultCamera.viewportHeight)
 
         Gdx.input.inputProcessor = inputMultiplexer
     }
@@ -159,8 +159,10 @@ ${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugS
     override fun resize(width: Int, height: Int) {
         resetCamera()
         super.resize(width, height)
-        if (!lockToEmulatedSize) {
-            val nano = measureNanoTime(fonts::loadAll)
+        if (resizeAction != ResizeAction.ANY_SIZE) {
+            val nano = measureNanoTime {
+                fonts.loadAll(defaultCamera.viewportWidth, defaultCamera.viewportHeight)
+            }
             Toolboks.LOGGER.info("Reloaded all ${fonts.fonts.size} fonts in ${nano / 1_000_000.0} ms")
         }
     }
@@ -181,10 +183,27 @@ ${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugS
     abstract fun createDefaultBorderedFont(): FreeTypeFont
 
     fun resetCamera() {
-        if (lockToEmulatedSize) {
-            defaultCamera.setToOrtho(false, emulatedSize.first.toFloat(), emulatedSize.second.toFloat())
-        } else {
-            defaultCamera.setToOrtho(false, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+        when (resizeAction) {
+            ResizeAction.ANY_SIZE -> defaultCamera.setToOrtho(false, Gdx.graphics.width.toFloat(),
+                                                              Gdx.graphics.height.toFloat())
+            ResizeAction.LOCKED -> defaultCamera.setToOrtho(false, emulatedSize.first.toFloat(),
+                                                            emulatedSize.second.toFloat())
+            ResizeAction.KEEP_ASPECT_RATIO -> {
+                val width: Float
+                val height: Float
+
+                if (Gdx.graphics.width < Gdx.graphics.height) {
+                    width = Gdx.graphics.width.toFloat()
+                    height = (emulatedSize.second.toFloat() / emulatedSize.first) * width
+                } else {
+                    height = Gdx.graphics.height.toFloat()
+                    width = (emulatedSize.first.toFloat() / emulatedSize.second) * height
+                }
+
+                defaultCamera.setToOrtho(false, width, height)
+            }
         }
+        Toolboks.LOGGER.info(
+                "Resizing camera, window is ${Gdx.graphics.width} x ${Gdx.graphics.height}, camera is ${defaultCamera.viewportWidth} x ${defaultCamera.viewportHeight}")
     }
 }

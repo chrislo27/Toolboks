@@ -28,16 +28,20 @@ class FontHandler(val game: ToolboksGame) : Disposable {
         fonts.values.forEach(Disposable::dispose)
     }
 
-    fun loadAll() {
-        fonts.values.forEach(FreeTypeFont::load)
+    fun loadAll(width: Float, height: Float) {
+        fonts.values.forEach {
+            it.load(width, height)
+        }
     }
 
-    fun loadFiltered(filter: (Map.Entry<String, FreeTypeFont>) -> Boolean) {
-        fonts.filter(filter).map(Map.Entry<String, FreeTypeFont>::value).forEach(FreeTypeFont::load)
+    fun loadFiltered(width: Float, height: Float, filter: (Map.Entry<String, FreeTypeFont>) -> Boolean) {
+        fonts.filter(filter).map(Map.Entry<String, FreeTypeFont>::value).forEach {
+            it.load(width, height)
+        }
     }
 
-    fun loadUnloaded() {
-        loadFiltered {
+    fun loadUnloaded(width: Float, height: Float) {
+        loadFiltered(width, height) {
             !it.value.isLoaded()
         }
     }
