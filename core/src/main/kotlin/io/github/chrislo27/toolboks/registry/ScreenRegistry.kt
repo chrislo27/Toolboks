@@ -3,7 +3,6 @@ package io.github.chrislo27.toolboks.registry
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.utils.Disposable
 import io.github.chrislo27.toolboks.Toolboks
-import io.github.chrislo27.toolboks.ToolboksGame
 import io.github.chrislo27.toolboks.ToolboksScreen
 
 
@@ -11,13 +10,21 @@ object ScreenRegistry : Disposable {
 
     val screens: Map<String, ToolboksScreen<*, *>> = mutableMapOf()
 
-    @Suppress("UNCHECKED_CAST")
-    inline operator fun <reified G : ToolboksGame> get(key: String): ToolboksScreen<G, *>? {
-        return screens[key] as ToolboksScreen<G, *>?
+    operator fun get(key: String): ToolboksScreen<*, *>? {
+        return screens[key]
     }
 
-    inline fun <reified G : ToolboksGame> getNonNull(key: String): ToolboksScreen<G, *> =
-            get<G>(key) ?: throw IllegalArgumentException("No screen found with key $key")
+    fun getNonNull(key: String): ToolboksScreen<*, *> {
+        return get(key) ?: throw IllegalArgumentException("No screen found with key $key")
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified S : ToolboksScreen<*, *>> getAsType(key: String): S? {
+        return screens[key] as S
+    }
+
+    inline fun <reified S : ToolboksScreen<*, *>> getNonNullAsType(key: String): S =
+            getAsType<S>(key) ?: throw IllegalArgumentException("No screen found with key $key")
 
     operator fun plusAssign(pair: Pair<String, ToolboksScreen<*, *>>) {
         add(pair.first, pair.second)

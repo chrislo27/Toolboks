@@ -6,7 +6,6 @@ import io.github.chrislo27.toolboks.Toolboks
 import io.github.chrislo27.toolboks.lazysound.LazySound
 import io.github.chrislo27.toolboks.lazysound.LazySoundLoader
 
-
 object AssetRegistry : Disposable {
 
     private const val LOAD_STATE_NONE = 0
@@ -25,7 +24,7 @@ object AssetRegistry : Disposable {
         manager.setLoader(LazySound::class.java, LazySoundLoader(manager.fileHandleResolver))
     }
 
-    fun bindAsset(key: String, file: String): String {
+    fun bindAsset(key: String, file: String): Pair<String, String> {
         if (key.startsWith(Toolboks.TOOLBOKS_ASSET_PREFIX)) {
             throw IllegalArgumentException("$key starts with the Toolboks asset prefix, which is ${Toolboks.TOOLBOKS_ASSET_PREFIX}")
         }
@@ -34,25 +33,25 @@ object AssetRegistry : Disposable {
         }
 
         (assetMap as MutableMap)[key] = file
-        return key
+        return key to file
     }
 
-    internal fun bindToolboksAsset(keyWithoutPrefix: String, file: String): String {
+    internal fun bindToolboksAsset(keyWithoutPrefix: String, file: String): Pair<String, String> {
         val key = Toolboks.TOOLBOKS_ASSET_PREFIX + keyWithoutPrefix
         if (assetMap.containsKey(key)) {
             throw IllegalArgumentException("$key has already been bound to ${assetMap[key]}")
         }
 
         (assetMap as MutableMap)[key] = file
-        return key
+        return key to file
     }
 
     inline fun <reified T> loadAsset(key: String, file: String) {
-        manager.load(bindAsset(key, file), T::class.java)
+        manager.load(bindAsset(key, file).second, T::class.java)
     }
 
     internal inline fun <reified T> loadToolboksAsset(key: String, file: String) {
-        manager.load(bindToolboksAsset(key, file), T::class.java)
+        manager.load(bindToolboksAsset(key, file).second, T::class.java)
     }
 
     fun addAssetLoader(loader: IAssetLoader) {
@@ -88,7 +87,7 @@ object AssetRegistry : Disposable {
     }
 
     operator inline fun <reified T> get(key: String): T {
-        return (unmanagedAssets[key] as T) ?: manager.get(assetMap[key], T::class.java) ?:
+        return (unmanagedAssets[key] as T?) ?: manager.get(assetMap[key], T::class.java) ?:
                 throw IllegalArgumentException(
                         if (manager.isLoaded(assetMap[key])) // this might never happen, actually
                             "Asset was wrong type: key $key, got ${T::class.java.canonicalName}," +

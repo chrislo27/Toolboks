@@ -27,4 +27,33 @@ object MathHelper {
                 && (realY1 in realY2..(realY2 + height2) || (realY2 + height2) in realY2..(realY2 + height2))
     }
 
+    fun getSawtoothWave(): Float {
+        return getSawtoothWave(System.currentTimeMillis(), 1f)
+    }
+
+    fun getSawtoothWave(seconds: Float): Float {
+        return getSawtoothWave(System.currentTimeMillis(), seconds)
+    }
+
+    fun getSawtoothWave(time: Long, seconds: Float): Float {
+        if (seconds == 0f) throw IllegalArgumentException("Seconds cannot be zero!")
+        return time % Math.round(seconds * 1000) / (seconds * 1000f)
+    }
+
+    fun getTriangleWave(ms: Long, seconds: Float): Float {
+        val f = getSawtoothWave(ms, seconds)
+        if (f >= 0.5f) {
+            return (1f - f) * 2
+        } else
+            return f * 2
+    }
+
+    fun getTriangleWave(sec: Float): Float {
+        return getTriangleWave(System.currentTimeMillis(), sec)
+    }
+
+    fun getTriangleWave(): Float {
+        return getTriangleWave(1f)
+    }
+
 }
