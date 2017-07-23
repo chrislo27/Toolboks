@@ -80,7 +80,7 @@ object Localization {
         if (checkMissing(key))
             return key
 
-        return currentBundle.bundle.format(key, args)
+        return currentBundle.bundle.format(key, *args)
     }
 
 }
