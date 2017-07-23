@@ -16,7 +16,7 @@ object ScreenRegistry : Disposable {
         return screens[key] as ToolboksScreen<G, *>?
     }
 
-    inline fun <reified G : ToolboksGame> getNonNull(key: String): ToolboksScreen<*, *> =
+    inline fun <reified G : ToolboksGame> getNonNull(key: String): ToolboksScreen<G, *> =
             get<G>(key) ?: throw IllegalArgumentException("No screen found with key $key")
 
     operator fun plusAssign(pair: Pair<String, ToolboksScreen<*, *>>) {
