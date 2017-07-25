@@ -33,7 +33,7 @@ open class TextLabel<S : ToolboksScreen<*, *>>
     open fun getFont(): BitmapFont =
             palette.font
 
-    fun setText(text: String, align: Int = this.textAlign, wrapping: Boolean = true,
+    fun setText(text: String, align: Int = this.textAlign, wrapping: Boolean = textWrapping,
                 isLocalization: Boolean = isLocalizationKey): TextLabel<S> {
         this.text = text
         this.textAlign = align
@@ -72,7 +72,11 @@ open class TextLabel<S : ToolboksScreen<*, *>>
         val oldScale = getFont().scaleX
         getFont().color = palette.textColor
         getFont().data.setScale(palette.fontScale)
-        getFont().drawCompressed(batch, getRealText(), location.realX, y, labelWidth, textAlign)
+        if (textWrapping) {
+            getFont().draw(batch, getRealText(), location.realX, y, labelWidth, textAlign, true)
+        } else {
+            getFont().drawCompressed(batch, getRealText(), location.realX, y, labelWidth, textAlign)
+        }
         getFont().color = oldColor
         getFont().data.setScale(oldScale)
     }
