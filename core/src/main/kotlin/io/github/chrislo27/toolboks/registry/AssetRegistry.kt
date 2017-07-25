@@ -1,6 +1,8 @@
 package io.github.chrislo27.toolboks.registry
 
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.utils.Disposable
 import io.github.chrislo27.toolboks.Toolboks
 import io.github.chrislo27.toolboks.lazysound.LazySound
@@ -15,6 +17,21 @@ object AssetRegistry : Disposable {
     val manager: AssetManager = AssetManager()
     val unmanagedAssets: MutableMap<String, Any> = mutableMapOf()
     val assetMap: Map<String, String> = mutableMapOf()
+    val missingTexture: Texture by lazy {
+        val pix = Pixmap(2, 2, Pixmap.Format.RGBA8888)
+
+        pix.setColor(1f, 0f, 1f, 1f)
+        pix.drawPixel(0, 0)
+        pix.drawPixel(1, 1)
+
+        pix.setColor(0f, 0f, 0f, 1f)
+        pix.drawPixel(1, 0)
+        pix.drawPixel(1, 0)
+
+        val tex = Texture(pix)
+        pix.dispose()
+        return@lazy tex
+    }
 
     private val assetLoaders: MutableList<IAssetLoader> = mutableListOf()
 
@@ -87,19 +104,25 @@ object AssetRegistry : Disposable {
     }
 
     operator inline fun <reified T> get(key: String): T {
-        return (unmanagedAssets[key] as T?) ?: manager.get(assetMap[key], T::class.java) ?:
-                throw IllegalArgumentException(
-                        if (manager.isLoaded(assetMap[key])) // this might never happen, actually
-                            "Asset was wrong type: key $key, got ${T::class.java.canonicalName}," +
-                                    " should be ${manager.getAssetType(assetMap[key]).canonicalName}"
-                        else
-                            "Asset not loaded/found: $key"
-                                              )
+        val unmanaged = (unmanagedAssets[key] as T?)
+        if (unmanaged != null) {
+            return unmanaged
+        }
+
+        if (!manager.isLoaded(assetMap[key], T::class.java)) {
+            if (T::class === Texture::class) {
+                return missingTexture as T
+            }
+            throw IllegalStateException("Asset not loaded/found: $key")
+        }
+
+        return manager.get(assetMap[key], T::class.java)
     }
 
     override fun dispose() {
         unmanagedAssets.values.filterIsInstance(Disposable::class.java).forEach(Disposable::dispose)
         manager.dispose()
+        missingTexture.dispose()
     }
 
     interface IAssetLoader {
