@@ -58,11 +58,18 @@ open class Stage<S : ToolboksScreen<*, *>>
     }
 
     fun updatePositions() {
-        onResize(camera.viewportWidth, camera.viewportHeight)
+        if (parent == null) {
+            onResize(camera.viewportWidth, camera.viewportHeight)
+        } else {
+            onResize(parent.location.pixelWidth, parent.location.pixelHeight)
+        }
     }
 
     override fun onResize(width: Float, height: Float) {
         super.onResize(width, height)
+        if (elements.any {it.parent !== this}) {
+            error("Elements ${elements.filter {it.parent !== this}.map {"[$it, parent=${it.parent}]"}} do not have this as their parent")
+        }
         elements.forEach { it.onResize(this.location.realWidth, this.location.realHeight) }
     }
 
