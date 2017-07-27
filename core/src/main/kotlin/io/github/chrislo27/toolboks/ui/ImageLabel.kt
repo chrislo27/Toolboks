@@ -26,7 +26,7 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
 
     }
 
-    var background = false
+    override var background = false
     var image: TextureRegion? = null
     var renderType: ImageRendering = ImageRendering.RENDER_FULL
 

@@ -22,7 +22,7 @@ open class TextLabel<S : ToolboksScreen<*, *>>
     var textAlign: Int
     var isLocalizationKey = true
     var textWrapping = true
-    var background = false
+    override var background = false
 
     open fun getRealText(): String =
             if (isLocalizationKey)
