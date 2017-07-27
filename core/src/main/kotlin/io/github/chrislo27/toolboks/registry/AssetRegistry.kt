@@ -26,7 +26,7 @@ object AssetRegistry : Disposable {
 
         pix.setColor(0f, 0f, 0f, 1f)
         pix.drawPixel(1, 0)
-        pix.drawPixel(1, 0)
+        pix.drawPixel(0, 1)
 
         val tex = Texture(pix)
         pix.dispose()
