@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.Align
 import io.github.chrislo27.toolboks.ToolboksScreen
 import io.github.chrislo27.toolboks.util.MathHelper
@@ -58,7 +59,8 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
     /**
      * Called each frame unless not visible
      */
-    abstract fun render(screen: S, batch: SpriteBatch)
+    abstract fun render(screen: S, batch: SpriteBatch,
+                        shapeRenderer: ShapeRenderer)
 
     /**
      * Called each frame when the parent screen is the current screen, regardless of visibility

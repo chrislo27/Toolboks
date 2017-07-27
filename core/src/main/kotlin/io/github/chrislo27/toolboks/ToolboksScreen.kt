@@ -15,7 +15,7 @@ public abstract class ToolboksScreen<G : ToolboksGame, SELF : ToolboksScreen<G, 
             val batch = main.batch
 
             batch.begin()
-            stage.render(this as SELF, batch)
+            stage.render(this as SELF, batch, main.shapeRenderer)
             if (Toolboks.stageOutlines) {
                 val old = batch.packedColor
                 batch.setColor(0f, 1f, 0f, 1f)

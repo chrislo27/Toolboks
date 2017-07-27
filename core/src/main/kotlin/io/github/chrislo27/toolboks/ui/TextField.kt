@@ -5,43 +5,31 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.Align
 import io.github.chrislo27.toolboks.ToolboksScreen
-import io.github.chrislo27.toolboks.i18n.Localization
-import io.github.chrislo27.toolboks.util.gdxutils.drawCompressed
-import io.github.chrislo27.toolboks.util.gdxutils.fillRect
-import io.github.chrislo27.toolboks.util.gdxutils.getTextHeight
-import io.github.chrislo27.toolboks.util.gdxutils.getTextWidth
+import io.github.chrislo27.toolboks.util.gdxutils.*
 
 
-open class TextLabel<S : ToolboksScreen<*, *>>
-    : Label<S>, Palettable {
+open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, parent: UIElement<S>,
+                                               parameterStage: Stage<S>)
+    : UIElement<S>(parent, parameterStage), Palettable, Backgrounded {
 
-    constructor(palette: UIPalette, parent: UIElement<S>, stage: Stage<S>) : super(palette, parent, stage) {
-        this.textAlign = Align.center
-    }
-
+    override var background: Boolean = false
     var text: String = ""
-    var textAlign: Int
-    var isLocalizationKey = true
-    var textWrapping = true
-    override var background = false
+        set(value) {
+            field = value
+            carat = Math.min(0, text.length)
+        }
+    var textAlign: Int = Align.left
+    var multiline: Boolean = false
+    /**
+     * 0 = start, the number is the index and then behind that
+     */
+    var carat: Int = 0
+        set(value) {
+            field = value.coerceIn(0, text.length)
+        }
 
-    open fun getRealText(): String =
-            if (isLocalizationKey)
-                Localization[text]
-            else
-                text
-    
     open fun getFont(): BitmapFont =
             palette.font
-
-    fun setText(text: String, align: Int = this.textAlign, wrapping: Boolean = textWrapping,
-                isLocalization: Boolean = isLocalizationKey): TextLabel<S> {
-        this.text = text
-        this.textAlign = align
-        this.textWrapping = wrapping
-        isLocalizationKey = isLocalization
-        return this
-    }
 
     override fun render(screen: S, batch: SpriteBatch,
                         shapeRenderer: ShapeRenderer) {
@@ -74,11 +62,17 @@ open class TextLabel<S : ToolboksScreen<*, *>>
         val oldScale = getFont().scaleX
         getFont().color = palette.textColor
         getFont().data.setScale(palette.fontScale)
-        if (textWrapping) {
-            getFont().draw(batch, getRealText(), location.realX, y, labelWidth, textAlign, true)
-        } else {
-            getFont().drawCompressed(batch, getRealText(), location.realX, y, labelWidth, textAlign)
+
+        shapeRenderer.prepareStencilMask(batch) {
+            this.projectionMatrix = batch.projectionMatrix
+            this.setColor(1f, 1f, 1f, 1f)
+            this.begin(ShapeRenderer.ShapeType.Filled)
+            this.rect(location.realX, location.realY, location.realWidth, location.realHeight)
+            this.end()
+        }.useStencilMask {
+            getFont().draw(batch, text, location.realX, y, labelWidth, textAlign, !multiline)
         }
+
         getFont().color = oldColor
         getFont().data.setScale(oldScale)
     }

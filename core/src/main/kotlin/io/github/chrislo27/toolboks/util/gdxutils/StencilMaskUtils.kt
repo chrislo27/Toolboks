@@ -6,9 +6,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 
 /**
- * Call this while the batch isn't running, then call batch.begin(). Finish with [resetStencilMask()]
+ * Call this with the function to draw primitives, then draw sprites with [useStencilMask]
  */
-inline fun ShapeRenderer.useStencilMask(drawing: ShapeRenderer.() -> Unit) {
+inline fun ShapeRenderer.prepareStencilMask(batch: SpriteBatch, drawing: ShapeRenderer.() -> Unit): SpriteBatch {
+    if (batch.isDrawing)
+        batch.end()
+
     Gdx.gl.glDepthFunc(GL20.GL_LESS)
     Gdx.gl.glEnable(GL20.GL_DEPTH_TEST)
     Gdx.gl.glDepthMask(true)
@@ -16,13 +19,19 @@ inline fun ShapeRenderer.useStencilMask(drawing: ShapeRenderer.() -> Unit) {
 
     this.drawing()
 
+    batch.begin()
     Gdx.gl.glDepthMask(false)
     Gdx.gl.glColorMask(true, true, true, true)
     Gdx.gl.glEnable(GL20.GL_DEPTH_TEST)
     Gdx.gl.glDepthFunc(GL20.GL_EQUAL)
+
+    return batch
 }
 
-fun SpriteBatch.resetStencilMask() {
-    Gdx.gl.glDisable(GL20.GL_DEPTH_TEST)
+inline fun SpriteBatch.useStencilMask(drawing: () -> Unit) {
+    drawing()
+
     this.flush()
+    Gdx.gl.glDisable(GL20.GL_DEPTH_TEST)
 }
+

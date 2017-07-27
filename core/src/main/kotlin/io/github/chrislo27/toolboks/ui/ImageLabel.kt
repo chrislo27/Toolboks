@@ -2,6 +2,7 @@ package io.github.chrislo27.toolboks.ui
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import io.github.chrislo27.toolboks.ToolboksScreen
 import io.github.chrislo27.toolboks.util.gdxutils.fillRect
 
@@ -30,12 +31,13 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
     var image: TextureRegion? = null
     var renderType: ImageRendering = ImageRendering.RENDER_FULL
 
-    override fun render(screen: S, batch: SpriteBatch) {
+    override fun render(screen: S, batch: SpriteBatch,
+                        shapeRenderer: ShapeRenderer) {
         if (background) {
-            val old = batch.color
+            val old = batch.packedColor
             batch.color = palette.backColor
             batch.fillRect(location.realX, location.realY, location.realWidth, location.realHeight)
-            batch.color = old
+            batch.setColor(old)
         }
 
         val image = this.image ?: return

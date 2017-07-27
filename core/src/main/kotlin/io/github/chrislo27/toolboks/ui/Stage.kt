@@ -4,6 +4,7 @@ import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import io.github.chrislo27.toolboks.ToolboksScreen
 
 
@@ -26,9 +27,10 @@ open class Stage<S : ToolboksScreen<*, *>>
         return elements.remove(element)
     }
 
-    override fun render(screen: S, batch: SpriteBatch) {
+    override fun render(screen: S, batch: SpriteBatch,
+                        shapeRenderer: ShapeRenderer) {
         elements.filter(UIElement<S>::visible).forEach {
-            it.render(screen, batch)
+            it.render(screen, batch, shapeRenderer)
         }
     }
 

@@ -1,6 +1,7 @@
 package io.github.chrislo27.toolboks.ui
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import io.github.chrislo27.toolboks.ToolboksScreen
 import io.github.chrislo27.toolboks.util.gdxutils.fillRect
 
@@ -38,7 +39,8 @@ open class Button<S : ToolboksScreen<*, *>>
         return enabled
     }
 
-    override fun render(screen: S, batch: SpriteBatch) {
+    override fun render(screen: S, batch: SpriteBatch,
+                        shapeRenderer: ShapeRenderer) {
         val oldBatchColor = batch.color
 
         if (wasClickedOn) {
@@ -54,7 +56,7 @@ open class Button<S : ToolboksScreen<*, *>>
         batch.color = oldBatchColor
 
         labels.forEach {
-            it.render(screen, batch)
+            it.render(screen, batch, shapeRenderer)
         }
     }
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.Align
 import io.github.chrislo27.toolboks.font.FontHandler
 import io.github.chrislo27.toolboks.font.FreeTypeFont
@@ -50,6 +51,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
         private set
     lateinit var batch: SpriteBatch
         private set
+    lateinit var shapeRenderer: ShapeRenderer
+        private set
 
     val defaultFont: BitmapFont
         get() = fonts[defaultFontKey].font!!
@@ -80,6 +83,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
         pixmap.dispose()
 
         batch = SpriteBatch()
+        shapeRenderer = ShapeRenderer()
         fonts = FontHandler(this)
         fonts[defaultFontKey] = createDefaultFont()
         fonts[defaultBorderedFontKey] = createDefaultBorderedFont()
@@ -91,6 +95,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
     open fun preRender() {
         defaultCamera.update()
         batch.projectionMatrix = defaultCamera.combined
+        shapeRenderer.projectionMatrix = defaultCamera.combined
         tickController.update()
 
         // render update
@@ -113,6 +118,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
 
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        Gdx.gl.glClearDepthf(1f)
+        Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT)
     }
 
     open fun postRender() {
@@ -171,6 +178,7 @@ ${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugS
         super.dispose()
 
         batch.dispose()
+        shapeRenderer.dispose()
         fonts.dispose()
         smallTexture.dispose()
 
