@@ -27,6 +27,8 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         const val BULLET: Char = 149.toChar()
         const val CARET_BLINK_RATE: Float = 0.5f
         const val CARET_WIDTH: Float = 2f
+        const val CARET_MOVE_TIMER: Float = 0.05f
+        const val INITIAL_CARET_TIMER: Float = 0.4f
     }
 
     override var background: Boolean = false
@@ -73,6 +75,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         true
     }
     private var caretTimer: Float = 0f
+    private var caretMoveTimer: Float =-1f
 
     open fun getFont(): BitmapFont =
             palette.font
@@ -144,6 +147,20 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
 
         getFont().color = oldColor
         getFont().data.setScale(oldScale)
+
+        if (caretMoveTimer > 0) {
+            caretMoveTimer -= Gdx.graphics.deltaTime
+            caretMoveTimer = Math.max(caretMoveTimer, 0f)
+
+            if (caretMoveTimer == 0f) {
+                caretMoveTimer = CARET_MOVE_TIMER
+                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                    caret--
+                } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                    caret++
+                }
+            }
+        }
     }
 
     override fun keyTyped(character: Char): Boolean {
@@ -157,11 +174,9 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             TAB, 0x7F.toChar() -> return false
             BACKSPACE -> {
                 if (text.isNotEmpty() && caret > 0) {
-                    println("current caret $caret")
                     val oldCaret = caret
                     caret--
                     text = text.substring(0, oldCaret - 1) + text.substring(oldCaret)
-                    println("new caret $caret")
                     return true
                 } else {
                     return false
@@ -181,6 +196,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
 
                 text = text.substring(0, caret) + character + text.substring(caret)
                 caret++
+                caretMoveTimer = 0f
 
                 return true
             }
@@ -205,15 +221,30 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         when (keycode) {
             Input.Keys.LEFT -> {
                 caret--
+                caretMoveTimer = INITIAL_CARET_TIMER
                 return true
             }
             Input.Keys.RIGHT -> {
                 caret++
+                caretMoveTimer = INITIAL_CARET_TIMER
                 return true
             }
         }
 
-        return false
+        return super.keyDown(keycode)
+    }
+
+    override fun keyUp(keycode: Int): Boolean {
+        if (!hasFocus)
+            return false
+        when (keycode) {
+            Input.Keys.LEFT, Input.Keys.RIGHT -> {
+                caretMoveTimer = -1f
+                return true
+            }
+        }
+
+        return super.keyUp(keycode)
     }
 
     override fun onLeftClick(xPercent: Float, yPercent: Float) {
