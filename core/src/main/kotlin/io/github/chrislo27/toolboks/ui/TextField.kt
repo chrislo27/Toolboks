@@ -135,8 +135,8 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
                 val oldColor = batch.packedColor
                 batch.color = getFont().color
 
-                batch.fillRect(location.realX - xOffset + textPositions[caret], y, CARET_WIDTH,
-                               -getFont().capHeight)
+                batch.fillRect(location.realX - xOffset + textPositions[Math.min(caret, textPositions.size - 1)], y - CARET_WIDTH, CARET_WIDTH,
+                               -(getFont().capHeight + CARET_WIDTH))
 
                 batch.setColor(oldColor)
             }
@@ -154,11 +154,14 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             return false
 
         when (character) {
-            TAB -> return false
+            TAB, 0x7F.toChar() -> return false
             BACKSPACE -> {
                 if (text.isNotEmpty() && caret > 0) {
-                    text = text.substring(0, caret - 1) + text.substring(caret)
+                    println("current caret $caret")
+                    val oldCaret = caret
                     caret--
+                    text = text.substring(0, oldCaret - 1) + text.substring(oldCaret)
+                    println("new caret $caret")
                     return true
                 } else {
                     return false
