@@ -42,7 +42,10 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             }
 
             caret = caret.coerceIn(0, text.length)
+
+            renderedText = if (isPassword) BULLET.toString().repeat(text.length) else text
         }
+    private var renderedText: String = ""
     private val textPositions: List<Float> = mutableListOf()
     private val layout = GlyphLayout()
     private var xOffset: Float = 0f
@@ -75,7 +78,12 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         true
     }
     private var caretTimer: Float = 0f
-    private var caretMoveTimer: Float =-1f
+    private var caretMoveTimer: Float = -1f
+    var isPassword: Boolean = false
+        set(value) {
+            field = value
+            text = text
+        }
 
     open fun getFont(): BitmapFont =
             palette.font
@@ -118,6 +126,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         val y: Float
         y = location.realY + location.realHeight / 2 + textHeight / 2
 
+        val text = renderedText
         val oldColor = getFont().color
         val oldScale = getFont().scaleX
         getFont().color = palette.textColor
@@ -138,7 +147,8 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
                 val oldColor = batch.packedColor
                 batch.color = getFont().color
 
-                batch.fillRect(location.realX - xOffset + textPositions[Math.min(caret, textPositions.size - 1)], y - CARET_WIDTH, CARET_WIDTH,
+                batch.fillRect(location.realX - xOffset + textPositions[Math.min(caret, textPositions.size - 1)],
+                               y - CARET_WIDTH, CARET_WIDTH,
                                -(getFont().capHeight + CARET_WIDTH))
 
                 batch.setColor(oldColor)
