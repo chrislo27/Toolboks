@@ -29,7 +29,8 @@ import kotlin.system.measureNanoTime
 
 abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
                             val version: Version,
-                            val emulatedSize: Pair<Int, Int>, val resizeAction: ResizeAction)
+                            val emulatedSize: Pair<Int, Int>, val resizeAction: ResizeAction,
+                            val minimumSize: Pair<Int, Int>)
     : Game(), TickHandler {
 
     companion object {
@@ -210,6 +211,10 @@ ${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugS
 
                 defaultCamera.setToOrtho(false, width, height)
             }
+        }
+        if (defaultCamera.viewportWidth < minimumSize.first || defaultCamera.viewportHeight < minimumSize.second) {
+            Toolboks.LOGGER.info("Camera too small, forcing it at minimum")
+            defaultCamera.setToOrtho(false, minimumSize.first.toFloat(), minimumSize.second.toFloat())
         }
         Toolboks.LOGGER.info(
                 "Resizing camera, window is ${Gdx.graphics.width} x ${Gdx.graphics.height}, camera is ${defaultCamera.viewportWidth} x ${defaultCamera.viewportHeight}")
