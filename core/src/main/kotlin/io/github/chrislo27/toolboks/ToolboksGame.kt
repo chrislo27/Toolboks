@@ -148,6 +148,7 @@ Memory usage: ${NumberFormat.getIntegerInstance().format(
                                 Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
                                 MemoryUtils.maxMemory)} KB
 
+Screen: ${screen?.javaClass?.canonicalName}
 ${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugString() ?: "" else ""}"""
 
                 font.drawCompressed(batch, string, 8f, Gdx.graphics.height - 8f, Gdx.graphics.width - 16f, Align.left)
