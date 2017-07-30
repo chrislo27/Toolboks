@@ -34,7 +34,7 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
 
     var alignment: Int
     var location: UIRectangle
-    var visible: Boolean = true
+    open var visible: Boolean = true
     var wasClickedOn = false
         private set
     var hoverTime: Float = 0f

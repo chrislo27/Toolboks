@@ -84,6 +84,13 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             field = value
             text = text
         }
+    override var visible: Boolean = super.visible
+        set(value) {
+            field = value
+            if (!value) {
+                hasFocus = false
+            }
+        }
 
     open fun getFont(): BitmapFont =
             palette.font
@@ -217,7 +224,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         if (super.touchDown(screenX, screenY, pointer, button))
             return true
 
-        if (hasFocus && !isMouseOver()) {
+        if (hasFocus && (!isMouseOver() || !visible)) {
             hasFocus = false
             return false
         }
@@ -260,7 +267,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
     override fun onLeftClick(xPercent: Float, yPercent: Float) {
         super.onLeftClick(xPercent, yPercent)
 
-        if (isMouseOver())
+        if (isMouseOver() && visible)
             hasFocus = true
 
         // copied from Kotlin stdlib with modifications
