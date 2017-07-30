@@ -8,6 +8,9 @@ class Version(val major: Int, val minor: Int, val patch: Int, val suffix: String
     }
 
     val numericalValue: Int
+    private val stringRepresentation: String by lazy {
+        "v$major.$minor.$patch${if (!suffix.isBlank()) "-$suffix" else ""}"
+    }
 
     companion object {
         const val MAX_PART_VALUE: Int = 0xFF
@@ -64,7 +67,7 @@ class Version(val major: Int, val minor: Int, val patch: Int, val suffix: String
     }
 
     override fun toString(): String {
-        return "v$major.$minor.$patch${if (!suffix.isBlank()) "-$suffix" else ""}"
+        return stringRepresentation
     }
 
     override fun equals(other: Any?): Boolean {
