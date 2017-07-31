@@ -127,17 +127,20 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
 
         val labelWidth = location.realWidth
         val labelHeight = location.realHeight
+        val font = getFont()
 
-        val textHeight = getFont().getTextHeight(text, labelWidth, false)
+        val textHeight = font.getTextHeight(text, labelWidth, false)
 
         val y: Float
         y = location.realY + location.realHeight / 2 + textHeight / 2
 
         val text = renderedText
-        val oldColor = getFont().color
-        val oldScale = getFont().scaleX
-        getFont().color = palette.textColor
-        getFont().data.setScale(palette.fontScale)
+        val oldColor = font.color
+        val oldScale = font.scaleX
+        val wasMarkupEnabled = font.data.markupEnabled
+        font.color = palette.textColor
+        font.data.setScale(palette.fontScale)
+        font.data.markupEnabled = false
 
         shapeRenderer.prepareStencilMask(batch) {
             this.projectionMatrix = batch.projectionMatrix
@@ -146,24 +149,25 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             this.rect(location.realX, location.realY, location.realWidth, location.realHeight)
             this.end()
         }.useStencilMask {
-            val layout: GlyphLayout = getFont().draw(batch, text, location.realX - xOffset, y, labelWidth, textAlign,
+            val layout: GlyphLayout = font.draw(batch, text, location.realX - xOffset, y, labelWidth, textAlign,
                                                      false)
 
             val caretBlink: Boolean = hasFocus && (caretTimer % (CARET_BLINK_RATE * 2)) <= 0.5f
             if (caretBlink) {
                 val oldColor = batch.packedColor
-                batch.color = getFont().color
+                batch.color = font.color
 
                 batch.fillRect(location.realX - xOffset + textPositions[Math.min(caret, textPositions.size - 1)],
                                y - CARET_WIDTH, CARET_WIDTH,
-                               -(getFont().capHeight + CARET_WIDTH))
+                               -(font.capHeight + CARET_WIDTH))
 
                 batch.setColor(oldColor)
             }
         }
 
-        getFont().color = oldColor
-        getFont().data.setScale(oldScale)
+        font.color = oldColor
+        font.data.setScale(oldScale)
+        font.data.markupEnabled = wasMarkupEnabled
 
         if (caretMoveTimer > 0) {
             caretMoveTimer -= Gdx.graphics.deltaTime
