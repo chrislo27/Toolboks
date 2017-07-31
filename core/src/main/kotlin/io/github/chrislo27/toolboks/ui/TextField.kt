@@ -39,6 +39,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             if (old != value) {
                 layout.setText(getFont(), text)
                 calculateTextPositions()
+                onTextChange(old)
             }
 
             caret = caret.coerceIn(0, text.length)
@@ -111,6 +112,10 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
                 textPositions += advances[i] + textPositions[i - 1]
             }
         }
+
+    }
+
+    open fun onTextChange(oldText: String) {
 
     }
 
