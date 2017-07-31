@@ -1,5 +1,6 @@
 package io.github.chrislo27.toolboks.ui
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -29,6 +30,7 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
 
     override var background = false
     var image: TextureRegion? = null
+    var tint: Color = Color(1f, 1f, 1f, 1f)
     var renderType: ImageRendering = ImageRendering.RENDER_FULL
 
     override fun render(screen: S, batch: SpriteBatch,
@@ -41,6 +43,8 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
         }
 
         val image = this.image ?: return
+        val old = batch.packedColor
+        batch.color = tint
 
         when (renderType) {
             ImageLabel.ImageRendering.RENDER_FULL -> {
@@ -66,6 +70,8 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
                 batch.draw(image, location.realX + x, location.realY + y, w, h)
             }
         }
+
+        batch.setColor(old)
 
     }
 
