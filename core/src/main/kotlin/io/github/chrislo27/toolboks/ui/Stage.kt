@@ -73,7 +73,7 @@ open class Stage<S : ToolboksScreen<*, *>>
         if (parent == null) {
             onResize(camera.viewportWidth, camera.viewportHeight)
         } else {
-            onResize(parent.location.pixelWidth, parent.location.pixelHeight)
+            onResize(parent.location.realWidth, parent.location.realHeight)
         }
     }
 
