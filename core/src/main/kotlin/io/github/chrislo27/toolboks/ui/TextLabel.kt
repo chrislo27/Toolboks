@@ -24,6 +24,7 @@ open class TextLabel<S : ToolboksScreen<*, *>>
     var isLocalizationKey = true
     var textWrapping = true
     override var background = false
+    var fontScaleMultiplier: Float = 1f
 
     open fun getRealText(): String =
             if (isLocalizationKey)
@@ -56,9 +57,8 @@ open class TextLabel<S : ToolboksScreen<*, *>>
         val labelHeight = location.realHeight
 
         val textHeightWithWrap = getFont().getTextHeight(text, labelWidth, true)
-        val textHeightNoWrap = getFont().getTextHeight(text, labelWidth, false)
         val shouldWrap = textHeightWithWrap <= location.realHeight
-        val textHeight = if (shouldWrap) textHeightWithWrap else textHeightNoWrap
+        val textHeight = getFont().getTextHeight(text, labelWidth, shouldWrap)
         val textWidth = getFont().getTextWidth(text, labelWidth, shouldWrap)
 
         val y: Float
@@ -73,7 +73,7 @@ open class TextLabel<S : ToolboksScreen<*, *>>
         val oldColor = getFont().color
         val oldScale = getFont().scaleX
         getFont().color = palette.textColor
-        getFont().data.setScale(palette.fontScale)
+        getFont().data.setScale(palette.fontScale * fontScaleMultiplier)
         if (textWrapping) {
             getFont().draw(batch, getRealText(), location.realX, y, labelWidth, textAlign, true)
         } else {
