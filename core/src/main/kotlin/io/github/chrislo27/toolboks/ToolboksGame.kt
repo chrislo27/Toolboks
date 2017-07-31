@@ -217,7 +217,8 @@ ${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugS
             Toolboks.LOGGER.info("Camera too small, forcing it at minimum")
             defaultCamera.setToOrtho(false, minimumSize.first.toFloat(), minimumSize.second.toFloat())
         }
+        defaultCamera.update()
         Toolboks.LOGGER.info(
-                "Resizing camera, window is ${Gdx.graphics.width} x ${Gdx.graphics.height}, camera is ${defaultCamera.viewportWidth} x ${defaultCamera.viewportHeight}")
+                "Resizing camera as $resizeAction, window is ${Gdx.graphics.width} x ${Gdx.graphics.height}, camera is ${defaultCamera.viewportWidth} x ${defaultCamera.viewportHeight}")
     }
 }

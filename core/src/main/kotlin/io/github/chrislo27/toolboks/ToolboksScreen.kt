@@ -37,7 +37,7 @@ public abstract class ToolboksScreen<G : ToolboksGame, SELF : ToolboksScreen<G, 
     }
 
     protected open fun resizeStage() {
-        stage?.onResize(stage!!.camera.viewportWidth, stage!!.camera.viewportHeight)
+        stage?.updatePositions()
     }
 
     override fun resize(width: Int, height: Int) {

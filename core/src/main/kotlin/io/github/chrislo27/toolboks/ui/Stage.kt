@@ -29,9 +29,13 @@ open class Stage<S : ToolboksScreen<*, *>>
 
     override fun render(screen: S, batch: SpriteBatch,
                         shapeRenderer: ShapeRenderer) {
+        camera.update()
+        val oldProj = batch.projectionMatrix
+        batch.projectionMatrix = camera.combined
         elements.filter(UIElement<S>::visible).forEach {
             it.render(screen, batch, shapeRenderer)
         }
+        batch.projectionMatrix = oldProj
     }
 
     override fun drawOutline(batch: SpriteBatch, camera: OrthographicCamera, lineThickness: Float) {
