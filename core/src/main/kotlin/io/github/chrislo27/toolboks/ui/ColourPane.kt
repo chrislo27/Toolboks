@@ -19,7 +19,6 @@ open class ColourPane<S : ToolboksScreen<*, *>>(parent: UIElement<S>, parameterS
 
             batch.setColor(colour.toFloatBits())
             batch.fillRect(location.realX, location.realY, location.realWidth, location.realHeight)
-            batch.fillRect(location.realX, location.realY + 64, 1280/2f, 16f)
 
             batch.setColor(oldColour)
         }

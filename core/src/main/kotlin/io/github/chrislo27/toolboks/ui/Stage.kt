@@ -17,6 +17,8 @@ open class Stage<S : ToolboksScreen<*, *>>
         get() = this
     open val elements: MutableList<UIElement<S>> = mutableListOf()
 
+    private var calledFromUpdatePositions: Boolean = false
+
     constructor(parent: UIElement<S>?, camera: OrthographicCamera) : super(parent, null) {
         this.camera = camera
         this.location.set(screenWidth = 1f, screenHeight = 1f)
@@ -64,6 +66,10 @@ open class Stage<S : ToolboksScreen<*, *>>
     }
 
     fun updatePositions() {
+        if (calledFromUpdatePositions) {
+            error("Unthread-safe use of updatePositions")
+        }
+        calledFromUpdatePositions = true
         if (parent == null) {
             onResize(camera.viewportWidth, camera.viewportHeight)
         } else {
@@ -72,6 +78,11 @@ open class Stage<S : ToolboksScreen<*, *>>
     }
 
     override fun onResize(width: Float, height: Float) {
+        val calledFromUpdatePositions = calledFromUpdatePositions
+        this.calledFromUpdatePositions = false
+        if (parent == null && !calledFromUpdatePositions) {
+            error("onResize cannot be called without a parent. You're dumb, and should use updatePositions instead.")
+        }
         super.onResize(width, height)
         if (elements.any {it.parent !== this}) {
             error("Elements ${elements.filter {it.parent !== this}.map {"[$it, parent=${it.parent}]"}} do not have this as their parent")
