@@ -39,6 +39,12 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
         private set
     var hoverTime: Float = 0f
 
+    fun percentageOfWidth(float: Float): Float =
+            float / location.realWidth
+
+    fun percentageOfHeight(float: Float): Float =
+            float / location.realHeight
+
     open fun removeChild(element: UIElement<S>): Boolean {
         return false
     }
@@ -95,7 +101,8 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
     }
 
     open fun drawOutline(batch: SpriteBatch, camera: OrthographicCamera, lineThickness: Float = 1f) {
-        batch.drawRect(location.realX, location.realY, location.realWidth, location.realHeight, (camera.viewportWidth / Gdx.graphics.width) * lineThickness)
+        batch.drawRect(location.realX, location.realY, location.realWidth, location.realHeight,
+                       (camera.viewportWidth / Gdx.graphics.width) * lineThickness)
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
