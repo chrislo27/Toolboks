@@ -7,7 +7,7 @@ import io.github.chrislo27.toolboks.util.gdxutils.fillRect
 
 
 open class Button<S : ToolboksScreen<*, *>>
-    : UIElement<S>, Palettable {
+    : UIElement<S>, Palettable, Backgrounded {
 
     override var palette: UIPalette
 
@@ -18,6 +18,7 @@ open class Button<S : ToolboksScreen<*, *>>
 
     val labels: List<Label<S>>
     var enabled = true
+    override var background: Boolean = true
 
     fun addLabel(l: Label<S>) {
         if (l.parent !== this) {
@@ -41,19 +42,21 @@ open class Button<S : ToolboksScreen<*, *>>
 
     override fun render(screen: S, batch: SpriteBatch,
                         shapeRenderer: ShapeRenderer) {
-        val oldBatchColor = batch.color
+        if (background) {
+            val oldBatchColor = batch.color
 
-        if (wasClickedOn) {
-            batch.color = palette.clickedBackColor
-        } else if (isMouseOver()) {
-            batch.color = palette.highlightedBackColor
-        } else {
-            batch.color = palette.backColor
+            if (wasClickedOn) {
+                batch.color = palette.clickedBackColor
+            } else if (isMouseOver()) {
+                batch.color = palette.highlightedBackColor
+            } else {
+                batch.color = palette.backColor
+            }
+
+            batch.fillRect(location.realX, location.realY, location.realWidth, location.realHeight)
+
+            batch.color = oldBatchColor
         }
-
-        batch.fillRect(location.realX, location.realY, location.realWidth, location.realHeight)
-
-        batch.color = oldBatchColor
 
         labels.forEach {
             it.render(screen, batch, shapeRenderer)
