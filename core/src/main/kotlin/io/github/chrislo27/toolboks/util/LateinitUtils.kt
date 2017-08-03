@@ -1,31 +1,17 @@
 package io.github.chrislo27.toolboks.util
 
-import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.jvm.javaField
 
-
-fun Any.hasUninitializedLateinits(): Boolean {
-    this::class.members.filter { it is KProperty && it.isLateinit }.forEach {
-        it as KProperty
-        try {
-            it.call(this)
-        } catch (e: InvocationTargetException) {
-            return false
-        }
-    }
-
-    return true
+fun Any.anyUninitializedLateinits(): Boolean {
+    return this.getUninitializedLateinits().isNotEmpty()
 }
 
 fun Any.getUninitializedLateinits(): List<KProperty<*>> {
-    return this::class.members.filterIsInstance<KProperty<*>>().mapNotNull {
-        if (!it.isLateinit)
-            return@mapNotNull null
-        try {
-            it.call(this)
-        } catch (e: InvocationTargetException) {
-            return@mapNotNull it
-        }
-        return@mapNotNull null
-    }
+    return this::class.memberProperties
+            .filter { it.isLateinit }
+            .onEach { it.isAccessible = true }
+            .filter { it.javaField?.get(this) == null }
 }
