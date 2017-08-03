@@ -1,5 +1,6 @@
 package io.github.chrislo27.toolboks.ui
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -25,6 +26,7 @@ open class TextLabel<S : ToolboksScreen<*, *>>
     var textWrapping = true
     override var background = false
     var fontScaleMultiplier: Float = 1f
+    var textColor: Color? = null
 
     open fun getRealText(): String =
             if (isLocalizationKey)
@@ -72,7 +74,7 @@ open class TextLabel<S : ToolboksScreen<*, *>>
 
         val oldColor = getFont().color
         val oldScale = getFont().scaleX
-        getFont().color = palette.textColor
+        getFont().color = if (textColor != null) textColor else palette.textColor
         getFont().data.setScale(palette.fontScale * fontScaleMultiplier)
         if (textWrapping) {
             getFont().draw(batch, getRealText(), location.realX, y, labelWidth, textAlign, true)
