@@ -60,7 +60,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
     val defaultBorderedFont: BitmapFont
         get() = fonts[defaultBorderedFontKey].font!!
 
-    val inputMultiplexer = InputMultiplexer()
+    open val inputMultiplexer = InputMultiplexer()
 
     /**
      * Should include the version
