@@ -2,6 +2,7 @@ package io.github.chrislo27.toolboks.ui
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -50,6 +51,8 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
     private val textPositions: List<Float> = mutableListOf()
     private val layout = GlyphLayout()
     private var xOffset: Float = 0f
+    var textWhenEmpty: String = ""
+    var textWhenEmptyColor: Color = palette.textColor
     var textAlign: Int = Align.left
     /**
      * 0 = start, the number is the index and then behind that
@@ -139,11 +142,12 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         val y: Float
         y = location.realY + location.realHeight / 2 + textHeight / 2
 
-        val text = renderedText
+        val isUsingEmpty = !hasFocus && renderedText.isEmpty()
+        val text = if (!isUsingEmpty) renderedText else textWhenEmpty
         val oldColor = font.color
         val oldScale = font.scaleX
         val wasMarkupEnabled = font.data.markupEnabled
-        font.color = palette.textColor
+        font.color = if (isUsingEmpty) textWhenEmptyColor else palette.textColor
         font.data.setScale(palette.fontScale)
         font.data.markupEnabled = false
 
@@ -157,7 +161,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             val layout: GlyphLayout = font.draw(batch, text, location.realX - xOffset, y, labelWidth, textAlign,
                                                      false)
 
-            val caretBlink: Boolean = hasFocus && (caretTimer % (CARET_BLINK_RATE * 2)) <= 0.5f
+            val caretBlink: Boolean = !isUsingEmpty && hasFocus && (caretTimer % (CARET_BLINK_RATE * 2)) <= 0.5f
             if (caretBlink) {
                 val oldColor = batch.packedColor
                 batch.color = font.color
