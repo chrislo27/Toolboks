@@ -167,8 +167,8 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
                 batch.color = font.color
 
                 batch.fillRect(location.realX - xOffset + if (textPositions.isNotEmpty()) textPositions[caret.coerceIn(0, (textPositions.size - 1).coerceAtLeast(0))] else 0f,
-                               y - CARET_WIDTH, CARET_WIDTH,
-                               -(font.capHeight + CARET_WIDTH))
+                               y - font.capHeight - CARET_WIDTH, CARET_WIDTH,
+                               (font.capHeight + CARET_WIDTH * 2))
 
                 batch.setColor(oldColor)
             }
