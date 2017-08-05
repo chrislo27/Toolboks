@@ -58,31 +58,32 @@ open class TextLabel<S : ToolboksScreen<*, *>>
         val labelWidth = location.realWidth
         val labelHeight = location.realHeight
 
-        val textHeightWithWrap = getFont().getTextHeight(text, labelWidth, true)
+        val font = getFont()
+        val textHeightWithWrap = font.getTextHeight(text, labelWidth, true)
         val shouldWrap = textHeightWithWrap <= location.realHeight
-        val textHeight = getFont().getTextHeight(text, labelWidth, shouldWrap)
-        val textWidth = getFont().getTextWidth(text, labelWidth, shouldWrap)
+        val textHeight = font.getTextHeight(text, labelWidth, shouldWrap)
+        val textWidth = font.getTextWidth(text, labelWidth, shouldWrap)
 
         val y: Float
         if ((textAlign and Align.top) == Align.top) {
-            y = location.realY + location.realHeight
+            y = location.realY + location.realHeight - font.capHeight
         } else if ((textAlign and Align.bottom) == Align.bottom) {
-            y = location.realY + textHeight
+            y = location.realY + font.capHeight + (textHeight - font.capHeight)
         } else {
             y = location.realY + location.realHeight / 2 + textHeight / 2
         }
 
-        val oldColor = getFont().color
-        val oldScale = getFont().scaleX
-        getFont().color = if (textColor != null) textColor else palette.textColor
-        getFont().data.setScale(palette.fontScale * fontScaleMultiplier)
+        val oldColor = font.color
+        val oldScale = font.scaleX
+        font.color = if (textColor != null) textColor else palette.textColor
+        font.data.setScale(palette.fontScale * fontScaleMultiplier)
         if (textWrapping) {
-            getFont().draw(batch, getRealText(), location.realX, y, labelWidth, textAlign, true)
+            font.draw(batch, getRealText(), location.realX, y, labelWidth, textAlign, true)
         } else {
-            getFont().drawCompressed(batch, getRealText(), location.realX, y, labelWidth, textAlign)
+            font.drawCompressed(batch, getRealText(), location.realX, y, labelWidth, textAlign)
         }
-        getFont().color = oldColor
-        getFont().data.setScale(oldScale)
+        font.color = oldColor
+        font.data.setScale(oldScale)
     }
 
 }
