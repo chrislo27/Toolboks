@@ -14,7 +14,7 @@ open class ContextMenu<S : ToolboksScreen<*, *>> : Stage<S> {
         val result = super.touchUp(screenX, screenY, pointer, button)
 
         if (!result) {
-            parent!!.removeChild(this)
+            this.visible = false
         }
 
         return result
@@ -24,7 +24,7 @@ open class ContextMenu<S : ToolboksScreen<*, *>> : Stage<S> {
         val result = super.touchDown(screenX, screenY, pointer, button)
 
         if (!result) {
-            parent!!.removeChild(this)
+            this.visible = false
         }
 
         return result
