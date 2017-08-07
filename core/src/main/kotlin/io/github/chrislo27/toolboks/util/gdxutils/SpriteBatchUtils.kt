@@ -8,11 +8,15 @@ fun SpriteBatch.fillRect(x: Float, y: Float, width: Float, height: Float) {
     this.draw(ToolboksGame.smallTexture, x, y, width, height)
 }
 
+fun SpriteBatch.drawRect(x: Float, y: Float, width: Float, height: Float, lineX: Float, lineY: Float) {
+    this.draw(ToolboksGame.smallTexture, x, y, width, lineY)
+    this.draw(ToolboksGame.smallTexture, x, y + height, width, -lineY)
+    this.draw(ToolboksGame.smallTexture, x, y, lineX, height)
+    this.draw(ToolboksGame.smallTexture, x + width, y, -lineX, height)
+}
+
 fun SpriteBatch.drawRect(x: Float, y: Float, width: Float, height: Float, line: Float) {
-    this.draw(ToolboksGame.smallTexture, x, y, width, line)
-    this.draw(ToolboksGame.smallTexture, x, y + height, width, -line)
-    this.draw(ToolboksGame.smallTexture, x, y, line, height)
-    this.draw(ToolboksGame.smallTexture, x + width, y, -line, height)
+    this.drawRect(x, y, width, height, line, line)
 }
 
 inline fun SpriteBatch.batchCall(projection: Matrix4 = this.projectionMatrix, drawFunction: SpriteBatch.() -> Unit) {
