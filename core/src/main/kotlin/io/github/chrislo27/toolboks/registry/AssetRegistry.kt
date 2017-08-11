@@ -1,8 +1,10 @@
 package io.github.chrislo27.toolboks.registry
 
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Disposable
 import io.github.chrislo27.toolboks.Toolboks
 import io.github.chrislo27.toolboks.lazysound.LazySound
@@ -117,6 +119,21 @@ object AssetRegistry : Disposable {
         }
 
         return manager.get(assetMap[key], T::class.java)
+    }
+
+    fun stopAllSounds() {
+        manager.getAll(Sound::class.java, Array()).toList().forEach(Sound::stop)
+        manager.getAll(LazySound::class.java, Array()).toList().filter(LazySound::isLoaded).forEach { it.sound.stop() }
+    }
+
+    fun pauseAllSounds() {
+        manager.getAll(Sound::class.java, Array()).toList().forEach(Sound::pause)
+        manager.getAll(LazySound::class.java, Array()).toList().filter(LazySound::isLoaded).forEach { it.sound.pause() }
+    }
+
+    fun resumeAllSounds() {
+        manager.getAll(Sound::class.java, Array()).toList().forEach(Sound::resume)
+        manager.getAll(LazySound::class.java, Array()).toList().filter(LazySound::isLoaded).forEach { it.sound.resume() }
     }
 
     override fun dispose() {
