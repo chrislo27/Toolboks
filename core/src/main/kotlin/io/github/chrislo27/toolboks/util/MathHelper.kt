@@ -27,6 +27,13 @@ object MathHelper {
                 && (realY1 in realY2..(realY2 + height2) || (realY2 + height2) in realY2..(realY2 + height2))
     }
 
+    fun snapToNearest(value: Float, interval: Float): Float {
+        val interval = Math.abs(interval)
+        if (interval == 0f)
+            return value
+        return Math.round(value / interval) * interval
+    }
+
     fun getSawtoothWave(): Float {
         return getSawtoothWave(System.currentTimeMillis(), 1f)
     }
