@@ -29,6 +29,17 @@ fun BitmapFont.getTextHeight(text: String, width: Float, wrap: Boolean): Float {
     return glyphLayout.height
 }
 
+/**
+ * Multiplies the current scale by x and y
+ */
+fun BitmapFont.scaleMul(x: Float, y: Float) {
+    this.data.setScale(this.scaleX * x, this.scaleY * y)
+}
+
+fun BitmapFont.scaleMul(coefficient: Float) {
+    this.scaleMul(coefficient, coefficient)
+}
+
 fun BitmapFont.drawCompressed(batch: SpriteBatch, text: String, x: Float, y: Float, width: Float,
                               align: Int) {
     val font = this
