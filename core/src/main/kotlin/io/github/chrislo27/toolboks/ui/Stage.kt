@@ -84,8 +84,8 @@ open class Stage<S : ToolboksScreen<*, *>>
             error("onResize cannot be called without a parent. You're dumb, and should use updatePositions instead.")
         }
         super.onResize(width, height)
-        if (elements.any {it.parent !== this}) {
-            error("Elements ${elements.filter {it.parent !== this}.map {"[$it, parent=${it.parent}]"}} do not have this as their parent")
+        if (elements.any { it.parent !== this }) {
+            error("Elements ${elements.filter { it.parent !== this }.map { "[$it, parent=${it.parent}]" }} do not have this as their parent")
         }
         elements.forEach { it.onResize(this.location.realWidth, this.location.realHeight) }
     }

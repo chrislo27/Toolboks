@@ -86,7 +86,7 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
 
     }
 
-    open fun canBeClickedOn(): Boolean = true
+    open fun canBeClickedOn(): Boolean = false
 
     open fun onResize(width: Float, height: Float) {
         location.onResize(width, height)
@@ -95,6 +95,7 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         if (canBeClickedOn() && visible && isMouseOver()) {
             wasClickedOn = true
+            return true
         }
 
         return false

@@ -233,6 +233,8 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         }
     }
 
+    override fun canBeClickedOn(): Boolean = true
+
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         if (super.touchDown(screenX, screenY, pointer, button))
             return true
@@ -242,7 +244,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             return false
         }
 
-        return true
+        return isMouseOver() && hasFocus && visible
     }
 
     override fun keyDown(keycode: Int): Boolean {
