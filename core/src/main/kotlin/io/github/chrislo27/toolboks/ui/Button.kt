@@ -45,9 +45,9 @@ open class Button<S : ToolboksScreen<*, *>>
         if (background) {
             val oldBatchColor = batch.color
 
-            if (wasClickedOn) {
+            if (wasClickedOn && enabled) {
                 batch.color = palette.clickedBackColor
-            } else if (isMouseOver()) {
+            } else if (isMouseOver() && enabled) {
                 batch.color = palette.highlightedBackColor
             } else {
                 batch.color = palette.backColor
@@ -60,6 +60,16 @@ open class Button<S : ToolboksScreen<*, *>>
 
         labels.forEach {
             it.render(screen, batch, shapeRenderer)
+        }
+
+        if (!enabled) {
+            val oldBatchColor = batch.packedColor
+
+            batch.setColor(0.15f, 0.15f, 0.15f, 0.75f)
+
+            batch.fillRect(location.realX, location.realY, location.realWidth, location.realHeight)
+
+            batch.setColor(oldBatchColor)
         }
     }
 
