@@ -56,7 +56,7 @@ project(":core") {
 
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.16"
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.17"
 
         compile "commons-io:commons-io:2.5"
     }
