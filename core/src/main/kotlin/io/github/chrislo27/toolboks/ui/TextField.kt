@@ -109,10 +109,10 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             return
         }
         for (i in 0 until advances.size) {
-            if (i == 0) {
-                textPositions += advances[i]
+            textPositions += if (i == 0) {
+                advances[i]
             } else {
-                textPositions += advances[i] + textPositions[i - 1]
+                advances[i] + textPositions[i - 1]
             }
         }
 
@@ -159,16 +159,33 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             this.end()
         }.useStencilMask {
             val layout: GlyphLayout = font.draw(batch, text, location.realX - xOffset, y, labelWidth, textAlign,
-                                                     false)
+                                                false)
 
             val caretBlink: Boolean = !isUsingEmpty && hasFocus && (caretTimer % (CARET_BLINK_RATE * 2)) <= 0.5f
             if (caretBlink) {
                 val oldColor = batch.packedColor
                 batch.color = font.color
 
-                batch.fillRect(location.realX - xOffset + if (textPositions.isNotEmpty()) textPositions[caret.coerceIn(0, (textPositions.size - 1).coerceAtLeast(0))] else 0f,
-                               y - font.capHeight - CARET_WIDTH, CARET_WIDTH,
-                               (font.capHeight + CARET_WIDTH * 2))
+                val glyphX = if (textPositions.isNotEmpty())
+                    textPositions[caret.coerceIn(0, (textPositions.size - 1).coerceAtLeast(0))]
+                else 0f
+
+                val xWithAlign: Float = when {
+                    textAlign and Align.center == Align.center -> {
+                        glyphX + location.realWidth / 2 - layout.width / 2
+                    }
+                    textAlign and Align.right == Align.right -> {
+                        location.realWidth - layout.width + glyphX
+                    }
+                    else -> {
+                        glyphX
+                    }
+                }
+
+                batch.fillRect(
+                        location.realX - xOffset + xWithAlign,
+                        y - font.capHeight - CARET_WIDTH, CARET_WIDTH,
+                        (font.capHeight + CARET_WIDTH * 2))
 
                 batch.setColor(oldColor)
             }
@@ -197,9 +214,6 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         if (!hasFocus)
             return false
 
-        if (!canTypeText(character))
-            return false
-
         when (character) {
             TAB, 0x7F.toChar() -> return false
             BACKSPACE -> {
@@ -223,6 +237,8 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             }
             else -> {
                 if (character < 32.toChar()) return false
+                if (!canTypeText(character))
+                    return false
 
                 text = text.substring(0, caret) + character + text.substring(caret)
                 caret++
