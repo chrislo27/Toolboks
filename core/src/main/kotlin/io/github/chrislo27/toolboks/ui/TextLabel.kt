@@ -59,8 +59,12 @@ open class TextLabel<S : ToolboksScreen<*, *>>
         val labelHeight = location.realHeight
 
         val font = getFont()
+        val oldScaleX = font.scaleX
+        val oldScaleY = font.scaleY
+        font.data.setScale(palette.fontScale * fontScaleMultiplier)
+        val text = getRealText()
         val textHeightWithWrap = font.getTextHeight(text, labelWidth, true)
-        val shouldWrap = textHeightWithWrap <= location.realHeight
+        val shouldWrap = textHeightWithWrap <= location.realHeight || textWrapping
         val textHeight = font.getTextHeight(text, labelWidth, shouldWrap)
         val textWidth = font.getTextWidth(text, labelWidth, shouldWrap)
 
@@ -74,16 +78,14 @@ open class TextLabel<S : ToolboksScreen<*, *>>
         }
 
         val oldColor = font.color
-        val oldScale = font.scaleX
         font.color = if (textColor != null) textColor else palette.textColor
-        font.data.setScale(palette.fontScale * fontScaleMultiplier)
         if (textWrapping) {
-            font.draw(batch, getRealText(), location.realX, y, labelWidth, textAlign, true)
+            font.draw(batch, text, location.realX, y, labelWidth, textAlign, true)
         } else {
-            font.drawCompressed(batch, getRealText(), location.realX, y, labelWidth, textAlign)
+            font.drawCompressed(batch, text, location.realX, y, labelWidth, textAlign)
         }
         font.color = oldColor
-        font.data.setScale(oldScale)
+        font.data.setScale(oldScaleX, oldScaleY)
     }
 
 }
