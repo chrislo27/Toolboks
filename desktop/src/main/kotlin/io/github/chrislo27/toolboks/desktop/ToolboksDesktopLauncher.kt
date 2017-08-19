@@ -21,8 +21,7 @@ class ToolboksDesktopLauncher(val game: ToolboksGame) {
     }
 
     fun launch(): LwjglApplication {
-        val app = object : LwjglApplication(game, config) {
-        }
+        val app = LwjglApplication(game, config)
         return app
     }
 
