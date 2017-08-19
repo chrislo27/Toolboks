@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.I18NBundle
 import io.github.chrislo27.toolboks.Toolboks
 import java.util.*
+import kotlin.properties.Delegates
 
 
 object Localization {
@@ -13,7 +14,11 @@ object Localization {
         Gdx.files.internal("localization/default")
     }
 
-    var currentIndex: Int = 0
+    var currentIndex: Int by Delegates.observable(0) { _, old, new ->
+        listeners.forEach {
+            it.invoke(bundles[old])
+        }
+    }
     var currentBundle: ToolboksBundle
         get() {
             return bundles[currentIndex]
@@ -25,6 +30,7 @@ object Localization {
             }
         }
     val bundles: MutableList<ToolboksBundle> = mutableListOf()
+    val listeners: MutableList<(oldBundle: ToolboksBundle) -> Unit> = mutableListOf()
 
     @JvmStatic
     fun createBundle(locale: NamedLocale): ToolboksBundle {
@@ -45,11 +51,14 @@ object Localization {
             error("No bundles found")
         }
 
-        currentIndex += direction
-        if (currentIndex < 0) {
-            currentIndex = bundles.size - 1
-        } else if (currentIndex >= bundles.size) {
-            currentIndex = 0
+        currentIndex = (currentIndex + direction).let {
+            (if (it < 0) {
+                bundles.size - 1
+            } else if (it >= bundles.size) {
+                0
+            } else {
+                it
+            })
         }
     }
 
