@@ -3,13 +3,11 @@ package io.github.chrislo27.toolboks.util
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.utils.Disposable
+import io.github.chrislo27.toolboks.util.gdxutils.MusicUtils
 import io.github.chrislo27.toolboks.util.gdxutils.copyHandle
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.runBlocking
-import kotlin.system.measureNanoTime
 
 /**
  * A utility class that wraps a [com.badlogic.gdx.audio.Music] instance.
@@ -60,23 +58,10 @@ class GranularMusic(val handle: FileHandle, val granularity: Float = 30.0f)
         if (!currentActiveMusic.isPlaying)
             return
 
-        val grainStep: Int = (seconds / granularity).toInt()
-//        if (grainStep >= instances.size) {
-//            // time to add more instances
-//            for (i in instances.size..grainStep) {
-//                val new = newMusic()
-//
-//                instances.add(0, new)
-//                println("Added $i")
-//            }
-//        }
-
         sortList()
 
         currentActiveMusic.pause()
         currentActiveMusic = instances.firstOrNull { it.position <= seconds } ?: currentActiveMusic
-        // calculate closest music
-        val oldPos = currentActiveMusic.position
         currentActiveMusic.play()
         currentActiveMusic.volume = 0.5f
         currentActiveMusic.position = seconds
@@ -87,10 +72,9 @@ class GranularMusic(val handle: FileHandle, val granularity: Float = 30.0f)
                 if (maybe != null) {
                     maybe.play()
                     maybe.pause()
-                    maybe.position = (seconds - 1f).coerceAtLeast(0f)
-                    maybe.volume = 0f
-                    println(maybe.volume)
-                    println("after position")
+                    MusicUtils.instance
+                            .setPositionNonBlocking(maybe, (seconds - 1f).coerceAtLeast(0f))
+                            .update(10000000f)
                     maybe.pause()
                 }
             }
@@ -116,29 +100,6 @@ class GranularMusic(val handle: FileHandle, val granularity: Float = 30.0f)
         if (instances.size <= 1)
             return
         instances.sortByDescending { it.position }
-    }
-
-    private fun reseek() {
-        val coroutines = instances.mapIndexed { index, music ->
-            launch(CommonPool) {
-                if (!music.isPlaying)
-                    music.play()
-                val newPos = index * granularity
-                val oldPos = music.position
-                val nano = measureNanoTime {
-                    music.position = newPos
-                }
-                println("Took ${nano / 1_000_000f} ms to reseek number $index from $oldPos to ${music.position}")
-                music.pause() // IMPORTANT - do not use stop as this defeats the purpose
-                if (!MathUtils.isEqual(music.position, newPos, 0.05f)) {
-                    // TODO out of duration?
-                }
-            }
-        }
-        runBlocking {
-            coroutines.forEach { it.join() }
-        }
-        println("New shuffled AND reseeked list: ${instances.map{it.position}}")
     }
 
     override fun dispose() {
