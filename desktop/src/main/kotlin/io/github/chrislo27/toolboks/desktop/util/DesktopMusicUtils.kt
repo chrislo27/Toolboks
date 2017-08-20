@@ -169,7 +169,7 @@ class DesktopMusicUtils : MusicUtils() {
                             return getPercentage()
                         }
                     }
-                    println("${(System.nanoTime() - nanoStart) / 1000000f}")
+//                    println("${(System.nanoTime() - nanoStart) / 1000000f}")
                     done = true
                 }
 
