@@ -61,6 +61,10 @@ class FastSeekingMusic(val handle: FileHandle, val granularity: Float = 30.0f)
         if (!currentActiveMusic.isPlaying)
             return
 
+        runBlocking {
+            coroutine?.join()
+        }
+
         sortList()
 
         currentActiveMusic.pause()
@@ -70,9 +74,6 @@ class FastSeekingMusic(val handle: FileHandle, val granularity: Float = 30.0f)
         currentActiveMusic.position = seconds
 
         if (instances.size >= 2) {
-            runBlocking {
-                coroutine?.join()
-            }
             coroutine = launch(CommonPool) {
                 val maybe = instances.lastOrNull { it != currentActiveMusic }
                 if (maybe != null) {
