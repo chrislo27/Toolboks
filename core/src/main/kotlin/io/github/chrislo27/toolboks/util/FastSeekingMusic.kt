@@ -19,7 +19,7 @@ import kotlinx.coroutines.experimental.launch
  * Seeking backwards can be done by asking the music instance behind that point to move up,
  * thus reducing the time to seek compared to starting from the beginning and going up to that point.
  */
-class GranularMusic(val handle: FileHandle, val granularity: Float = 30.0f)
+class FastSeekingMusic(val handle: FileHandle, val granularity: Float = 30.0f)
     : Disposable {
 
     val completionListener = CompletionListener()
