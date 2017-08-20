@@ -7,7 +7,9 @@ import com.badlogic.gdx.utils.Disposable
 import io.github.chrislo27.toolboks.util.gdxutils.MusicUtils
 import io.github.chrislo27.toolboks.util.gdxutils.copyHandle
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.runBlocking
 
 /**
  * A utility class that wraps a [com.badlogic.gdx.audio.Music] instance.
@@ -45,6 +47,7 @@ class FastSeekingMusic(val handle: FileHandle, val granularity: Float = 30.0f)
         }
     val isPlaying: Boolean
         get() = currentActiveMusic.isPlaying
+    @Volatile private var coroutine: Job? = null
 
     private fun newMusic(): Music {
         val music = Gdx.audio.newMusic(handle.copyHandle())
@@ -67,7 +70,10 @@ class FastSeekingMusic(val handle: FileHandle, val granularity: Float = 30.0f)
         currentActiveMusic.position = seconds
 
         if (instances.size >= 2) {
-            launch(CommonPool) {
+            runBlocking {
+                coroutine?.join()
+            }
+            coroutine = launch(CommonPool) {
                 val maybe = instances.lastOrNull { it != currentActiveMusic }
                 if (maybe != null) {
                     maybe.play()
