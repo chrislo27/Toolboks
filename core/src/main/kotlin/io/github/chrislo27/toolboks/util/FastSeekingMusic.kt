@@ -103,6 +103,10 @@ class FastSeekingMusic(val handle: FileHandle, val granularity: Float = 30.0f)
         instances.forEach(Music::pause)
     }
 
+    fun stop() {
+        instances.forEach(Music::stop)
+    }
+
     private fun sortList() {
         if (instances.size <= 1)
             return
