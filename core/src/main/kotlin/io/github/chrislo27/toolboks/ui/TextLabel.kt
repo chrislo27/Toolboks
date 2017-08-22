@@ -23,6 +23,7 @@ open class TextLabel<S : ToolboksScreen<*, *>>
     var text: String = ""
     var textAlign: Int
     var isLocalizationKey = true
+    var localizationArgs = arrayOf<Any>()
     var textWrapping = true
     override var background = false
     var fontScaleMultiplier: Float = 1f
@@ -30,7 +31,7 @@ open class TextLabel<S : ToolboksScreen<*, *>>
 
     open fun getRealText(): String =
             if (isLocalizationKey)
-                Localization[text]
+                Localization[text, localizationArgs]
             else
                 text
     
