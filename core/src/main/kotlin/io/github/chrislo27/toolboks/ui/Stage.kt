@@ -91,34 +91,50 @@ open class Stage<S : ToolboksScreen<*, *>>
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        return elements.filter { it.touchUp(screenX, screenY, pointer, button) }.any()
+        if (!visible)
+            return false
+        return elements.filter { it.visible && it.touchUp(screenX, screenY, pointer, button) }.any()
     }
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
-        return elements.filter { it.mouseMoved(screenX, screenY) }.any()
+        if (!visible)
+            return false
+        return elements.filter { it.visible && it.mouseMoved(screenX, screenY) }.any()
     }
 
     override fun keyTyped(character: Char): Boolean {
-        return elements.filter { it.keyTyped(character) }.any()
+        if (!visible)
+            return false
+        return elements.filter { it.visible && it.keyTyped(character) }.any()
     }
 
     override fun scrolled(amount: Int): Boolean {
-        return elements.filter { it.scrolled(amount) }.any()
+        if (!visible)
+            return false
+        return elements.filter { it.visible && it.scrolled(amount) }.any()
     }
 
     override fun keyUp(keycode: Int): Boolean {
-        return elements.filter { it.keyUp(keycode) }.any()
+        if (!visible)
+            return false
+        return elements.filter { it.visible && it.keyUp(keycode) }.any()
     }
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-        return elements.filter { it.touchDragged(screenX, screenY, pointer) }.any()
+        if (!visible)
+            return false
+        return elements.filter { it.visible && it.touchDragged(screenX, screenY, pointer) }.any()
     }
 
     override fun keyDown(keycode: Int): Boolean {
-        return elements.filter { it.keyDown(keycode) }.any()
+        if (!visible)
+            return false
+        return elements.filter { it.visible && it.keyDown(keycode) }.any()
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        return elements.filter { it.touchDown(screenX, screenY, pointer, button) }.any()
+        if (!visible)
+            return false
+        return elements.filter { it.visible && it.touchDown(screenX, screenY, pointer, button) }.any()
     }
 }
