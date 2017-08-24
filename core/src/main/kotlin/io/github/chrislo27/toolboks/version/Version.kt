@@ -14,7 +14,7 @@ class Version(val major: Int, val minor: Int, val patch: Int, val suffix: String
 
     companion object {
         const val MAX_PART_VALUE: Int = 0xFF
-        val REGEX: Regex = "v(\\d+).(\\d+).(\\d+)(-.+)?".toRegex()
+        val REGEX: Regex = "v(\\d+).(\\d+).(\\d+)(?:-(.+))?".toRegex()
 
 //		init {
 //			val snapshotRegex = "SNAPSHOT_(\\d\\d\\d\\d)(\\d\\d)(\\d\\d).".toRegex()
