@@ -12,11 +12,11 @@ abstract class Checkbox<S : ToolboksScreen<*, *>>(palette: UIPalette, parent: UI
     abstract val uncheckedTex: TextureRegion?
     abstract val checkedTex: TextureRegion?
 
-    val checkLabel: ImageLabel<S> = ImageLabel(palette, parent, stage).apply {
+    val checkLabel: ImageLabel<S> = ImageLabel(palette, this, stage).apply {
         this.location.set(screenWidth = checkLabelPortion)
         this.renderType = ImageLabel.ImageRendering.ASPECT_RATIO
     }
-    val textLabel: TextLabel<S> = TextLabel(palette, parent, stage).apply {
+    val textLabel: TextLabel<S> = TextLabel(palette, this, stage).apply {
         this.location.set(screenX = checkLabelPortion, screenWidth = 1f - checkLabelPortion)
     }
 
