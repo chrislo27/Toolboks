@@ -55,7 +55,7 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
                 val y: Float
                 val w: Float
                 val h: Float
-                if (image.regionWidth >= image.regionHeight) { // wider than tall
+                if (Math.max(image.regionWidth.toFloat(), location.realWidth) >= Math.max(image.regionHeight.toFloat(), location.realHeight)) { // wider than tall
                     w = location.realWidth
                     x = 0f
                     h = w * (image.regionHeight.toFloat() / image.regionWidth)
