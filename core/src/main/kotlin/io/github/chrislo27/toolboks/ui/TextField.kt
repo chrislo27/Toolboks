@@ -38,7 +38,11 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             val old = field
             field = value
             if (old != value) {
-                layout.setText(getFont(), text)
+                val font = getFont()
+                val wasMarkup = font.data.markupEnabled
+                font.data.markupEnabled = false
+                layout.setText(font, text)
+                font.data.markupEnabled = wasMarkup
                 calculateTextPositions()
                 onTextChange(old)
             }
