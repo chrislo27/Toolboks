@@ -14,26 +14,23 @@ import kotlinx.coroutines.experimental.runBlocking
 /**
  * A utility class that wraps a [com.badlogic.gdx.audio.Music] instance.
  *
- * It splits it up based on the provided [granularity] in seconds. This is to allow
- * for faster seeking.
- *
- * By having a music instance for every [X][granularity] seconds, you can seek more quickly.
- * Seeking backwards can be done by asking the music instance behind that point to move up,
- * thus reducing the time to seek compared to starting from the beginning and going up to that point.
+ * It uses two Music instances and ping-pongs between them when playing, so the other can seek in a coroutine.
  */
-class FastSeekingMusic(val handle: FileHandle, val granularity: Float = 30.0f)
+class FastSeekingMusic(val handle: FileHandle)
     : Disposable {
 
     val completionListener = CompletionListener()
-    private val instances: MutableList<Music> = mutableListOf()
+    private val instances: Array<Music>
 
     init {
-        instances += newMusic()
-        instances += newMusic()
+        instances = arrayOf(newMusic(), newMusic())
     }
 
     @Volatile
-    private var currentActiveMusic: Music = instances.first()
+    private var currentIndex: Int = 0
+
+    private val currentActiveMusic: Music
+        get() = instances[currentIndex]
 
     var position: Float
         get() = currentActiveMusic.position
@@ -63,29 +60,25 @@ class FastSeekingMusic(val handle: FileHandle, val granularity: Float = 30.0f)
 
         runBlocking {
             coroutine?.join()
+            coroutine = null
         }
 
-        sortList()
-
         currentActiveMusic.pause()
-        currentActiveMusic = instances.firstOrNull { it.position <= seconds } ?: currentActiveMusic
+        currentIndex = if (currentIndex == 0) 1 else 0
         currentActiveMusic.play()
         currentActiveMusic.volume = 0.5f
         currentActiveMusic.position = seconds
 
-        if (instances.size >= 2) {
-            coroutine = launch(CommonPool) {
-                val maybe = instances.lastOrNull { it != currentActiveMusic }
-                if (maybe != null) {
-                    maybe.play()
-                    maybe.pause()
-                    MusicUtils.instance
-                            .setPositionNonBlocking(maybe, (seconds - 1f).coerceAtLeast(0f))
-                            .update(10000000f)
-                    maybe.pause()
-                }
-            }
+        coroutine = launch(CommonPool) {
+            val mus = instances[if (currentIndex == 0) 1 else 0]
+            mus.play()
+            mus.pause()
+            MusicUtils.instance
+                    .setPositionNonBlocking(mus, (seconds - 1f).coerceAtLeast(0f))
+                    .update(10000000f)
+            mus.pause()
         }
+
     }
 
     /**
@@ -105,12 +98,6 @@ class FastSeekingMusic(val handle: FileHandle, val granularity: Float = 30.0f)
 
     fun stop() {
         instances.forEach(Music::stop)
-    }
-
-    private fun sortList() {
-        if (instances.size <= 1)
-            return
-        instances.sortByDescending { it.position }
     }
 
     override fun dispose() {
