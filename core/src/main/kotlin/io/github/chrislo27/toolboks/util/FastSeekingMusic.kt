@@ -74,7 +74,7 @@ class FastSeekingMusic(val handle: FileHandle)
             mus.play()
             mus.pause()
             MusicUtils.instance
-                    .setPositionNonBlocking(mus, (seconds - 1f).coerceAtLeast(0f))
+                    .setPositionNonBlocking(mus, (seconds - 1f).coerceAtLeast(0f), false)
                     .update(10000000f)
             mus.pause()
         }

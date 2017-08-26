@@ -10,7 +10,7 @@ abstract class MusicUtils {
             set
     }
 
-    abstract fun setPositionNonBlocking(music: Music, seconds: Float): PositionUpdate
+    abstract fun setPositionNonBlocking(music: Music, seconds: Float, shouldResetOnEnd: Boolean): PositionUpdate
 
     abstract class PositionUpdate(val music: Music) {
 

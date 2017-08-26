@@ -26,7 +26,8 @@ class DesktopMusicUtils : MusicUtils() {
         }
     }
 
-    override fun setPositionNonBlocking(music: Music, seconds: Float): DesktopPositionUpdate {
+    override fun setPositionNonBlocking(music: Music, seconds: Float, shouldResetOnEnd: Boolean)
+            : DesktopPositionUpdate {
         music as OpenALMusic
 
         val tempBytes: ByteArray = ByteArray(bufferSize)
@@ -183,15 +184,17 @@ class DesktopMusicUtils : MusicUtils() {
                             alSourceQueueBuffers(sourceID, bufferID)
                         }
                         if (!filled) {
-                            stop()
                             run {
                                 val field = OpenALMusic::class.java.getDeclaredField("onCompletionListener")
                                 field.isAccessible = true
                                 field.get(music) as Music.OnCompletionListener?
                             }?.onCompletion(music)
+                            if (shouldResetOnEnd) {
+                                stop()
+                            }
                         }
                         alSourcef(sourceID, AL11.AL_SEC_OFFSET, position - getRenderedSeconds())
-                        if (wasPlaying) {
+                        if (wasPlaying && !shouldResetOnEnd) {
                             alSourcePlay(sourceID)
                             setIsPlaying(true)
                         }
