@@ -8,11 +8,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 /**
  * Call this with the function to draw primitives, then draw sprites with [useStencilMask]
  */
-inline fun ShapeRenderer.prepareStencilMask(batch: SpriteBatch, drawing: ShapeRenderer.() -> Unit): SpriteBatch {
+inline fun ShapeRenderer.prepareStencilMask(batch: SpriteBatch, clearDepthBuffer: Boolean = true,
+                                            drawing: ShapeRenderer.() -> Unit): SpriteBatch {
     if (batch.isDrawing)
         batch.end()
 
-    Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT)
+    if (clearDepthBuffer) {
+        Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT)
+    }
     Gdx.gl.glDepthFunc(GL20.GL_LESS)
     Gdx.gl.glEnable(GL20.GL_DEPTH_TEST)
     Gdx.gl.glDepthMask(true)
