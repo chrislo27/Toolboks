@@ -66,7 +66,6 @@ class FastSeekingMusic(val handle: FileHandle)
         currentActiveMusic.pause()
         currentIndex = if (currentIndex == 0) 1 else 0
         currentActiveMusic.play()
-        currentActiveMusic.volume = 0.5f
         currentActiveMusic.position = seconds
 
         coroutine = launch(CommonPool) {
