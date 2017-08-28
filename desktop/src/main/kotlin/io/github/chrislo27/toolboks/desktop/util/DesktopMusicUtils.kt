@@ -160,11 +160,25 @@ class DesktopMusicUtils : MusicUtils() {
 
                 music.apply {
                     val nanoStart = System.nanoTime()
+                    var errors = 0
                     while (getRenderedSeconds() < seconds - secondsPerBuffer) {
-                        if (read(tempBytes) <= 0) {
-                            break
+                        try {
+                            val bytes = read(tempBytes)
+
+                            if (bytes <= 0) {
+                                break
+                            }
+
+                            addRenderedSeconds(secondsPerBuffer)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            reset()
+                            errors++
+
+                            if (errors > 10) {
+                                throw e
+                            }
                         }
-                        addRenderedSeconds(secondsPerBuffer)
 
                         if ((System.nanoTime() - nanoStart) / 1_000_000f > delta * 1000) {
                             return getPercentage()
