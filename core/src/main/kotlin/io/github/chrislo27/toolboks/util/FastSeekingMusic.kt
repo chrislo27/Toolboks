@@ -6,10 +6,8 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Disposable
 import io.github.chrislo27.toolboks.util.gdxutils.MusicUtils
 import io.github.chrislo27.toolboks.util.gdxutils.copyHandle
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.runBlocking
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * A utility class that wraps a [com.badlogic.gdx.audio.Music] instance.
@@ -26,11 +24,11 @@ class FastSeekingMusic(val handle: FileHandle)
         instances = arrayOf(newMusic(), newMusic())
     }
 
-    @Volatile
-    private var currentIndex: Int = 0
+    private val currentIndex = AtomicInteger(0)
+    private val currentJob = AtomicReference<Job?>(null)
 
     private val currentActiveMusic: Music
-        get() = instances[currentIndex]
+        get() = instances[currentIndex.get()]
 
     var position: Float
         get() = currentActiveMusic.position
@@ -44,12 +42,20 @@ class FastSeekingMusic(val handle: FileHandle)
         }
     val isPlaying: Boolean
         get() = currentActiveMusic.isPlaying
-    @Volatile private var coroutine: Job? = null
 
     private fun newMusic(): Music {
         val music = Gdx.audio.newMusic(handle.copyHandle())
         music.setOnCompletionListener(completionListener)
         return music
+    }
+
+    fun update(delta: Float) {
+        val job = currentJob.get() ?: return
+        val progress = job.update(delta)
+
+        if (progress >= 1f) {
+            currentJob.set(null)
+        }
     }
 
     @Synchronized
@@ -59,26 +65,45 @@ class FastSeekingMusic(val handle: FileHandle)
         if (!currentActiveMusic.isPlaying)
             return
 
-        runBlocking {
-            coroutine?.join()
-            coroutine = null
+        val job = currentJob.get()
+        if (job != null) {
+            while (job.update(1f) < 1f);
         }
 
         val oldCurrent = currentActiveMusic
-        currentIndex = if (currentIndex == 0) 1 else 0
+        val index = currentIndex.getAndUpdate {
+            if (it == 0) 1 else 0
+        }
         val newCurrent = currentActiveMusic
         oldCurrent.pause()
         newCurrent.play()
         newCurrent.position = seconds
 
-        coroutine = launch(CommonPool) {
-            val mus = oldCurrent
-            mus.play()
-            mus.pause()
-            MusicUtils.instance
-                    .setPositionNonBlocking(mus, (seconds - 1f).coerceAtLeast(0f), false)
-                    .updateBlocking()
-            mus.pause()
+        currentJob.set(Job(oldCurrent, (seconds - 1f).coerceAtLeast(0f)))
+
+    }
+
+    private inner class Job(val music: Music, val seconds: Float, val shouldReset: Boolean = false) {
+
+        private var started = false
+        private lateinit var pos: MusicUtils.PositionUpdate
+
+        fun update(delta: Float): Float {
+            if (!started) {
+                started = true
+
+                pos = MusicUtils.instance.setPositionNonBlocking(music, seconds, shouldReset)
+                music.play()
+                music.pause()
+            }
+
+            val progress = pos.update(delta)
+
+            if (progress >= 1f) {
+                music.pause()
+            }
+
+            return progress
         }
 
     }
