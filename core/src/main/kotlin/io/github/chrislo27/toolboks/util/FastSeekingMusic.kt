@@ -52,6 +52,7 @@ class FastSeekingMusic(val handle: FileHandle)
         return music
     }
 
+    @Synchronized
     private fun _setPosition(seconds: Float) {
         if (seconds < 0)
             throw IllegalArgumentException("Seconds ($seconds) cannot be negative")
@@ -63,18 +64,20 @@ class FastSeekingMusic(val handle: FileHandle)
             coroutine = null
         }
 
-        currentActiveMusic.pause()
+        val oldCurrent = currentActiveMusic
         currentIndex = if (currentIndex == 0) 1 else 0
-        currentActiveMusic.play()
-        currentActiveMusic.position = seconds
+        val newCurrent = currentActiveMusic
+        oldCurrent.pause()
+        newCurrent.play()
+        newCurrent.position = seconds
 
         coroutine = launch(CommonPool) {
-            val mus = instances[if (currentIndex == 0) 1 else 0]
+            val mus = oldCurrent
             mus.play()
             mus.pause()
             MusicUtils.instance
                     .setPositionNonBlocking(mus, (seconds - 1f).coerceAtLeast(0f), false)
-                    .update(10000000f)
+                    .updateBlocking()
             mus.pause()
         }
 

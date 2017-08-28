@@ -16,6 +16,10 @@ abstract class MusicUtils {
 
         abstract fun update(delta: Float): Float
 
+        fun updateBlocking() {
+            while (update(10000f) < 1f);
+        }
+
     }
 
 }
