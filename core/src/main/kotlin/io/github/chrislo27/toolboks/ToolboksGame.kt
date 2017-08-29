@@ -111,6 +111,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
                 Toolboks.stageOutlines = !Toolboks.stageOutlines
                 Toolboks.LOGGER.debug("Toggled stage outlines to ${Toolboks.stageOutlines}")
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
+                System.gc()
             }
         }
         if (screen != null) {
@@ -142,7 +144,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
                 val string =
                         """FPS: [${if (fps <= 10) "RED" else if (fps < 30) "YELLOW" else "WHITE"}]$fps[]
 Debug mode: ${Toolboks.DEBUG_KEY_NAME}
-  While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N | S - Toggle stage outlines
+  While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N | S - Toggle stage outlines | G - Garbage collect
 Version: $versionString
 Memory usage: ${NumberFormat.getIntegerInstance().format(
                                 Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
