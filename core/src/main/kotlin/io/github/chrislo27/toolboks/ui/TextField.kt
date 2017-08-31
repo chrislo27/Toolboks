@@ -101,6 +101,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
                 hasFocus = false
             }
         }
+    var canPaste = true
 
     open fun getFont(): BitmapFont =
             palette.font
@@ -230,12 +231,11 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
                     val data: String = Toolkit.getDefaultToolkit().systemClipboard.getData(
                             DataFlavor.stringFlavor) as String? ?: return
 
-                    // TODO fix proper check
-//                    if (data.all(canTypeText)) {
-//                        text = text.substring(0, caret) + data + text.substring(caret)
-//                        caret += data.length
-//                        caretMoveTimer = 0f
-//                    }
+                    if (data.all(canTypeText) && canPaste) {
+                        text = text.substring(0, caret) + data + text.substring(caret)
+                        caret += data.length
+                        caretMoveTimer = 0f
+                    }
                 } catch (ignored: Exception) {
                 }
             }
