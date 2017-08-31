@@ -251,10 +251,6 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         val alt = Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT)
         val shift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)
 
-        if (control || alt) {
-            return false
-        }
-
         when (character) {
             TAB -> return false
             BACKSPACE -> {
