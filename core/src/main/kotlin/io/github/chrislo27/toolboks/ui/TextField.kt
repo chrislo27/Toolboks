@@ -230,11 +230,12 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
                     val data: String = Toolkit.getDefaultToolkit().systemClipboard.getData(
                             DataFlavor.stringFlavor) as String? ?: return
 
-                    if (data.all(canTypeText)) {
-                        text = text.substring(0, caret) + data + text.substring(caret)
-                        caret += data.length
-                        caretMoveTimer = 0f
-                    }
+                    // TODO fix proper check
+//                    if (data.all(canTypeText)) {
+//                        text = text.substring(0, caret) + data + text.substring(caret)
+//                        caret += data.length
+//                        caretMoveTimer = 0f
+//                    }
                 } catch (ignored: Exception) {
                 }
             }
