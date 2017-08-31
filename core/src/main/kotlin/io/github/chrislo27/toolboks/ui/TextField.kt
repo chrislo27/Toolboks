@@ -255,12 +255,22 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         }
 
         when (character) {
-            TAB, 0x7F.toChar() -> return false
+            TAB -> return false
             BACKSPACE -> {
                 if (text.isNotEmpty() && caret > 0) {
                     val oldCaret = caret
                     caret--
                     text = text.substring(0, oldCaret - 1) + text.substring(oldCaret)
+                    return true
+                } else {
+                    return false
+                }
+            }
+            DELETE -> {
+                if (text.isNotEmpty() && caret < text.length) {
+                    val oldCaret = caret
+//                    caret--
+                    text = text.substring(0, oldCaret) + text.substring(oldCaret + 1)
                     return true
                 } else {
                     return false
