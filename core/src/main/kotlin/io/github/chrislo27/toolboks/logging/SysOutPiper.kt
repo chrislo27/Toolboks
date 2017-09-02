@@ -55,6 +55,7 @@ object SysOutPiper {
         builder.append("Operating System Specifications:\n")
         builder.append("    Java Version: " + System.getProperty("java.version") + " " + System.getProperty(
                 "sun.arch.data.model") + " bit" + "\n")
+        builder.append("    Java Vendor: ${System.getProperty("java.vendor")}")
         builder.append("    OS Name: " + System.getProperty("os.name") + "\n")
         builder.append("    OS Version: " + System.getProperty("os.version") + "\n")
         builder.append("    JVM memory available: " + MemoryUtils.maxMemory + " KB\n")
