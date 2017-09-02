@@ -3,6 +3,7 @@ package io.github.chrislo27.toolboks.i18n
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.I18NBundle
+import com.badlogic.gdx.utils.ObjectMap
 import io.github.chrislo27.toolboks.Toolboks
 import java.util.*
 import kotlin.properties.Delegates
@@ -35,6 +36,35 @@ object Localization {
     @JvmStatic
     fun createBundle(locale: NamedLocale): ToolboksBundle {
         return ToolboksBundle(locale, I18NBundle.createBundle(baseHandle, locale.locale, "UTF-8"))
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun logMissingLocalizations() {
+        val keys: List<String> = bundles.firstOrNull()?.bundle?.let { bundle ->
+            val field = bundle::class.java.getDeclaredField("properties")
+            field.isAccessible = true
+            val map = field.get(bundle) as ObjectMap<String, String>
+
+            map.keys().toList()
+        } ?: return
+        val missing: List<Pair<ToolboksBundle, List<String>>> = bundles.drop(1).map { tbundle ->
+            val bundle = tbundle.bundle
+            val field = bundle::class.java.getDeclaredField("properties")
+            field.isAccessible = true
+            val map = field.get(bundle) as ObjectMap<String, String>
+
+            tbundle to (keys.map { key ->
+                if (!map.containsKey(key)) {
+                    key
+                } else {
+                    ""
+                }
+            }.filter { !it.isBlank() })
+        }
+
+        missing.forEach {
+            Toolboks.LOGGER.warn("Missing keys for bundle ${it.first.locale}:${it.second.joinToString(separator = "") { "\n  * $it" }}")
+        }
     }
 
     fun reloadAll() {
