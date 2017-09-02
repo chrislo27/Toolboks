@@ -9,10 +9,19 @@ class Version(val major: Int, val minor: Int, val patch: Int, val suffix: String
 
     val numericalValue: Int
     private val stringRepresentation: String by lazy {
-        "v$major.$minor.$patch${if (!suffix.isBlank()) "-$suffix" else ""}"
+        if (isUnknown) {
+            "<unknown version>"
+        } else {
+            "v$major.$minor.$patch${if (!suffix.isBlank()) "-$suffix" else ""}"
+        }
     }
+    val isUnknown: Boolean
 
     companion object {
+
+        val UNKNOWN: Version = Version(-1, -1, -1)
+        val RETRIEVING: Version = Version(-2, -2, -2)
+
         const val MAX_PART_VALUE: Int = 0xFF
         val REGEX: Regex = "v(\\d+).(\\d+).(\\d+)(?:-(.+))?".toRegex()
 
@@ -59,8 +68,13 @@ class Version(val major: Int, val minor: Int, val patch: Int, val suffix: String
     }
 
     init {
-        if (major !in 0..MAX_PART_VALUE || minor !in 0..MAX_PART_VALUE || patch !in 0..MAX_PART_VALUE) {
-            throw IllegalArgumentException("Invalid version. The max part value is $MAX_PART_VALUE. $this")
+        if ((major == -1 || major == -2) && minor == major && patch == major) {
+            isUnknown = true
+        } else {
+            isUnknown = false
+            if (major !in 0..MAX_PART_VALUE || minor !in 0..MAX_PART_VALUE || patch !in 0..MAX_PART_VALUE) {
+                throw IllegalArgumentException("Invalid version. The max part value is $MAX_PART_VALUE. $this")
+            }
         }
 
         numericalValue = (major shl 16) or (minor shl 8) or (patch)
