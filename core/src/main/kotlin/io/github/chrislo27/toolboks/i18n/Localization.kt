@@ -62,8 +62,9 @@ object Localization {
             }.filter { !it.isBlank() })
         }
 
-        missing.forEach {
-            Toolboks.LOGGER.warn("Missing keys for bundle ${it.first.locale}:${it.second.joinToString(separator = "") { "\n  * $it" }}")
+        missing.filter { it.second.isNotEmpty() }.forEach {
+            Toolboks.LOGGER.warn("Missing keys for bundle ${it.first.locale}:${it.second.joinToString(
+                    separator = "") { "\n  * $it" }}")
         }
     }
 
