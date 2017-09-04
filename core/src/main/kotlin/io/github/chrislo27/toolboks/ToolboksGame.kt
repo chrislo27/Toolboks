@@ -169,13 +169,13 @@ ${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugS
 
     override fun resize(width: Int, height: Int) {
         resetCamera()
-        super.resize(width, height)
         if (resizeAction != ResizeAction.ANY_SIZE) {
             val nano = measureNanoTime {
                 fonts.loadAll(defaultCamera.viewportWidth, defaultCamera.viewportHeight)
             }
             Toolboks.LOGGER.info("Reloaded all ${fonts.fonts.size} fonts in ${nano / 1_000_000.0} ms")
         }
+        super.resize(width, height)
     }
 
     override fun dispose() {
