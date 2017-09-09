@@ -62,6 +62,10 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
 
     open val inputMultiplexer = InputMultiplexer()
 
+    private var memoryDeltaTime: Float = 0f
+    private var lastMemory: Long = 0L
+    var memoryDelta: Long = 0L
+
     /**
      * Should include the version
      */
@@ -135,6 +139,14 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
             super.render()
             postRender()
 
+            memoryDeltaTime += Gdx.graphics.deltaTime
+            if (memoryDeltaTime >= 1f) {
+                memoryDeltaTime = 0f
+                val heap = Gdx.app.nativeHeap
+                memoryDelta = heap - lastMemory
+                lastMemory = heap
+            }
+
             if (Toolboks.debugMode) {
                 val font = defaultBorderedFont
                 batch.begin()
@@ -146,9 +158,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
 Debug mode: ${Toolboks.DEBUG_KEY_NAME}
   While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N | S - Toggle stage outlines | G - Garbage collect
 Version: $versionString
-Memory usage: ${NumberFormat.getIntegerInstance().format(
-                                Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
-                                MemoryUtils.maxMemory)} KB
+Memory usage: ${NumberFormat.getIntegerInstance().format(Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
+                                MemoryUtils.maxMemory)} KB (${NumberFormat.getIntegerInstance().format(memoryDelta / 1024)} KB/s)
 
 Screen: ${screen?.javaClass?.canonicalName}
 ${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugString() ?: "" else ""}"""
