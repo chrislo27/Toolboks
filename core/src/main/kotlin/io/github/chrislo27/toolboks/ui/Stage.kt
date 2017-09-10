@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import io.github.chrislo27.toolboks.ToolboksScreen
 
 
+/**
+ * A stage is the main root container for most [UIElement]s.
+ */
 open class Stage<S : ToolboksScreen<*, *>>
     : UIElement<S>, InputProcessor {
 

@@ -17,6 +17,9 @@ import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 
 
+/**
+ * A single-line text field. Supports carets but not selection.
+ */
 open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, parent: UIElement<S>,
                                                parameterStage: Stage<S>)
     : UIElement<S>(parent, parameterStage), Palettable, Backgrounded {

@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.utils.Disposable
 
 
+/**
+ * Handles a FreeType font. Used for dynamic resizing.
+ */
 class FreeTypeFont(val file: FileHandle, val defaultWindowSize: Pair<Int, Int>,
                    val fontSize: Int, val borderSize: Float,
                    val parameter: FreeTypeFontGenerator.FreeTypeFontParameter) : Disposable {

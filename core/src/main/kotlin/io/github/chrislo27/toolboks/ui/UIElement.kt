@@ -14,6 +14,9 @@ import io.github.chrislo27.toolboks.util.gdxutils.getInputX
 import io.github.chrislo27.toolboks.util.gdxutils.getInputY
 
 
+/**
+ * The base UI element.
+ */
 abstract class UIElement<S : ToolboksScreen<*, *>>
     : InputProcessor {
 

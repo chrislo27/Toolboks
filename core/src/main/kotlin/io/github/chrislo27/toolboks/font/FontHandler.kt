@@ -4,6 +4,9 @@ import com.badlogic.gdx.utils.Disposable
 import io.github.chrislo27.toolboks.ToolboksGame
 
 
+/**
+ * A [FreeTypeFont] container. Can handle dynamic resizing.
+ */
 class FontHandler(val game: ToolboksGame) : Disposable {
 
     val fonts: MutableMap<String, FreeTypeFont> = mutableMapOf()

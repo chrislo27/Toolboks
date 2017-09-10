@@ -10,6 +10,9 @@ import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.properties.Delegates
 
 
+/**
+ * Pretties up the libGDX localization system.
+ */
 object Localization {
 
     val baseHandle: FileHandle by lazy {

@@ -13,6 +13,9 @@ import io.github.chrislo27.toolboks.util.gdxutils.getTextHeight
 import io.github.chrislo27.toolboks.util.gdxutils.getTextWidth
 
 
+/**
+ * A standard text label.
+ */
 open class TextLabel<S : ToolboksScreen<*, *>>
     : Label<S>, Palettable {
 

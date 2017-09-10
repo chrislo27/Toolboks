@@ -3,6 +3,9 @@ package io.github.chrislo27.toolboks.tick
 import io.github.chrislo27.toolboks.ToolboksGame
 
 
+/**
+ * Controls and dispatches tick updates.
+ */
 class TickController {
 
     var tickNumber: Long = 0

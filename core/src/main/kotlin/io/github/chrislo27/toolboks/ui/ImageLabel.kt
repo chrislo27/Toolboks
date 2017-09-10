@@ -8,6 +8,9 @@ import io.github.chrislo27.toolboks.ToolboksScreen
 import io.github.chrislo27.toolboks.util.gdxutils.fillRect
 
 
+/**
+ * A standard image label.
+ */
 open class ImageLabel<S : ToolboksScreen<*, *>>
     : Label<S>, Palettable {
 
