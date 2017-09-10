@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.ObjectMap
 import io.github.chrislo27.toolboks.Toolboks
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.properties.Delegates
 
 
@@ -31,7 +32,7 @@ object Localization {
             }
         }
     val bundles: MutableList<ToolboksBundle> = mutableListOf()
-    val listeners: MutableList<(oldBundle: ToolboksBundle) -> Unit> = mutableListOf()
+    val listeners: MutableList<(oldBundle: ToolboksBundle) -> Unit> = CopyOnWriteArrayList()
 
     @JvmStatic
     fun createBundle(locale: NamedLocale): ToolboksBundle {
