@@ -32,7 +32,7 @@ public abstract class ToolboksScreen<G : ToolboksGame, SELF : ToolboksScreen<G, 
 
     abstract fun tickUpdate()
 
-    fun getDebugString(): String? {
+    open fun getDebugString(): String? {
         return null
     }
 
