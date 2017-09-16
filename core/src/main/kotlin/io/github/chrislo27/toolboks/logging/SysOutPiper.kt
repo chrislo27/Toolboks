@@ -2,6 +2,7 @@ package io.github.chrislo27.toolboks.logging
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.utils.StreamUtils
 import io.github.chrislo27.toolboks.ToolboksGame
 import io.github.chrislo27.toolboks.lazysound.LazySound
 import io.github.chrislo27.toolboks.util.MemoryUtils
@@ -27,7 +28,7 @@ object SysOutPiper {
 
     private @Volatile var piped: Boolean = false
 
-    fun pipe(game: ToolboksGame) {
+    fun pipe(args: Array<String>, game: ToolboksGame) {
         if (piped)
             return
         piped = true
@@ -45,7 +46,8 @@ object SysOutPiper {
         val ps = PrintStream(stream)
         ps.println("==============\nAUTO-GENERATED\n==============\n")
         val builder = StringBuilder()
-        builder.append("Game Specifications:\n")
+        builder.append("Program Specifications:\n")
+        builder.append("    Launch arguments: ${args.toList()}")
         builder.append("    Version: " + game.version.toString() + "\n")
         builder.append("    Application type: " + Gdx.app.type.toString() + "\n")
         builder.append("    Lazy loading enabled: " + LazySound.loadLazilyWithAssetManager + "\n")
@@ -84,7 +86,7 @@ object SysOutPiper {
         System.setErr(PrintStream(newErr))
 
         Runtime.getRuntime().addShutdownHook(thread(start = false) {
-            stream.close()
+            StreamUtils.closeQuietly(stream)
         })
     }
 
