@@ -47,7 +47,7 @@ object SysOutPiper {
         ps.println("==============\nAUTO-GENERATED\n==============\n")
         val builder = StringBuilder()
         builder.append("Program Specifications:\n")
-        builder.append("    Launch arguments: $args")
+        builder.append("    Launch arguments: $args\n")
         builder.append("    Version: " + game.version.toString() + "\n")
         builder.append("    Application type: " + Gdx.app.type.toString() + "\n")
         builder.append("    Lazy loading enabled: " + LazySound.loadLazilyWithAssetManager + "\n")
