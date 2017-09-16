@@ -71,9 +71,11 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
      */
     abstract fun getTitle(): String
 
+    abstract val programLaunchArguments: List<String>
+
     override fun create() {
         if (logToFile) {
-            SysOutPiper.pipe(this)
+            SysOutPiper.pipe(programLaunchArguments, this)
         }
         Toolboks.LOGGER = logger
 

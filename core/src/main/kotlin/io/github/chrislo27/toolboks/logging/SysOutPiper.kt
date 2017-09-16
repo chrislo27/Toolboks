@@ -28,7 +28,7 @@ object SysOutPiper {
 
     private @Volatile var piped: Boolean = false
 
-    fun pipe(args: Array<String>, game: ToolboksGame) {
+    fun pipe(args: List<String>, game: ToolboksGame) {
         if (piped)
             return
         piped = true
@@ -47,7 +47,7 @@ object SysOutPiper {
         ps.println("==============\nAUTO-GENERATED\n==============\n")
         val builder = StringBuilder()
         builder.append("Program Specifications:\n")
-        builder.append("    Launch arguments: ${args.toList()}")
+        builder.append("    Launch arguments: $args")
         builder.append("    Version: " + game.version.toString() + "\n")
         builder.append("    Application type: " + Gdx.app.type.toString() + "\n")
         builder.append("    Lazy loading enabled: " + LazySound.loadLazilyWithAssetManager + "\n")
