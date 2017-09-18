@@ -10,6 +10,7 @@ class LazySound(val handle: FileHandle) : Disposable {
 
     companion object {
         var loadLazilyWithAssetManager: Boolean = true
+        var soundFactory: (FileHandle) -> Sound = Gdx.audio::newSound
     }
 
     private @Volatile var backing: Sound? = null
@@ -35,7 +36,7 @@ class LazySound(val handle: FileHandle) : Disposable {
             error("Lazy sound already disposed of")
         }
         if (!isLoaded) {
-            backing = Gdx.audio.newSound(handle)
+            backing = soundFactory(handle)
         }
     }
 
