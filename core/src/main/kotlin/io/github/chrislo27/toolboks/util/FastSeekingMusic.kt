@@ -17,6 +17,12 @@ import java.util.concurrent.atomic.AtomicReference
 class FastSeekingMusic(val handle: FileHandle)
     : Disposable {
 
+    companion object {
+
+        var musicFactory: (FileHandle) -> Music = Gdx.audio::newMusic
+
+    }
+
     val completionListener = CompletionListener()
     private val instances: Array<Music>
 
@@ -44,7 +50,7 @@ class FastSeekingMusic(val handle: FileHandle)
         get() = currentActiveMusic.isPlaying
 
     private fun newMusic(): Music {
-        val music = Gdx.audio.newMusic(handle.copyHandle())
+        val music = musicFactory(handle.copyHandle())
         music.setOnCompletionListener(completionListener)
         return music
     }
