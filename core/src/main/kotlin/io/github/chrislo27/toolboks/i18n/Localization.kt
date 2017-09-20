@@ -63,7 +63,7 @@ object Localization {
                 } else {
                     ""
                 }
-            }.filter { !it.isBlank() })
+            }.filter { !it.isBlank() }).sorted()
         }
 
         missing.filter { it.second.isNotEmpty() }.forEach {
