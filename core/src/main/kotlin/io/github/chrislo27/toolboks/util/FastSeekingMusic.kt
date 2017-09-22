@@ -19,7 +19,7 @@ class FastSeekingMusic(val handle: FileHandle)
 
     companion object {
 
-        var musicFactory: (FileHandle) -> Music = Gdx.audio::newMusic
+        var musicFactory: (FileHandle) -> Music = { Gdx.audio.newMusic(it) }
 
     }
 
