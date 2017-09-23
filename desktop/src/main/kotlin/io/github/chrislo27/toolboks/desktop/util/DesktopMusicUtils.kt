@@ -3,6 +3,7 @@ package io.github.chrislo27.toolboks.desktop.util
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALMusic
+import com.badlogic.gdx.utils.FloatArray
 import io.github.chrislo27.toolboks.util.gdxutils.MusicUtils
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL10
@@ -62,13 +63,18 @@ class DesktopMusicUtils : MusicUtils() {
             isPlayingField.setBoolean(music, value)
         }
 
+        val renderedSecondsQueueField = run {
+            val field = OpenALMusic::class.java.getDeclaredField("renderedSecondsQueue")
+            field.isAccessible = true
+            field
+        }
         val renderedSecondsField = run {
             val field = OpenALMusic::class.java.getDeclaredField("renderedSeconds")
             field.isAccessible = true
             field
         }
-        val secondsPerBuffer = run {
-            val field = OpenALMusic::class.java.getDeclaredField("secondsPerBuffer")
+        val maxSecondsPerBuffer = run {
+            val field = OpenALMusic::class.java.getDeclaredField("maxSecondsPerBuffer")
             field.isAccessible = true
             field.getFloat(music)
         }
@@ -77,6 +83,7 @@ class DesktopMusicUtils : MusicUtils() {
             field.isAccessible = true
             field.getInt(null)
         }
+        val renderedSecondsQueue: FloatArray = renderedSecondsQueueField.get(music) as FloatArray
 
         fun getRenderedSeconds(): Float = renderedSecondsField.getFloat(music)
         fun setRenderedSeconds(value: Float) {
@@ -120,12 +127,18 @@ class DesktopMusicUtils : MusicUtils() {
             if (length <= 0) {
                 if (isLooping) {
                     loop()
-                    setRenderedSeconds(0f)
                     length = read(tempBytes)
                     if (length <= 0) return false
+                    if (renderedSecondsQueue.size > 0) {
+                        renderedSecondsQueue.set(0, 0f)
+                    }
                 } else
                     return false
             }
+            val previousLoadedSeconds = if (renderedSecondsQueue.size > 0) renderedSecondsQueue.first() else 0f
+            val currentBufferSeconds = maxSecondsPerBuffer * length.toFloat() / bufferSize.toFloat()
+            renderedSecondsQueue.insert(0, previousLoadedSeconds + currentBufferSeconds)
+
             tempBuffer.put(tempBytes, 0, length).flip()
             AL10.alBufferData(bufferID, format, tempBuffer, sampleRate)
             return true
@@ -144,8 +157,10 @@ class DesktopMusicUtils : MusicUtils() {
                         setIsPlaying(false)
                         alSourceStop(sourceID)
                         alSourceUnqueueBuffers(sourceID, buffers)
-                        addRenderedSeconds(secondsPerBuffer * bufferCount)
-                        if (position <= getRenderedSeconds()) {
+                        while (renderedSecondsQueue.size > 0) {
+                            setRenderedSeconds(renderedSecondsQueue.pop())
+                        }
+                        if (seconds <= getRenderedSeconds()) {
                             reset()
                             setRenderedSeconds(0f)
                         }
@@ -154,14 +169,14 @@ class DesktopMusicUtils : MusicUtils() {
 
                 fun getPercentage(): Float {
                     return music.run {
-                        (getRenderedSeconds() / position - secondsPerBuffer).coerceIn(0f, 1f)
+                        (getRenderedSeconds() / position - maxSecondsPerBuffer).coerceIn(0f, 1f)
                     }
                 }
 
                 music.apply {
                     val nanoStart = System.nanoTime()
                     var errors = 0
-                    while (getRenderedSeconds() < seconds - secondsPerBuffer) {
+                    while (getRenderedSeconds() < seconds - maxSecondsPerBuffer) {
                         try {
                             val bytes = read(tempBytes)
 
@@ -169,7 +184,7 @@ class DesktopMusicUtils : MusicUtils() {
                                 break
                             }
 
-                            addRenderedSeconds(secondsPerBuffer)
+                            addRenderedSeconds(maxSecondsPerBuffer)
                         } catch (e: Exception) {
                             e.printStackTrace()
                             reset()
@@ -189,6 +204,7 @@ class DesktopMusicUtils : MusicUtils() {
                 }
 
                 if (done) {
+                    renderedSecondsQueue.add(getRenderedSeconds())
                     music.apply {
                         var filled = false
                         for (i in 0..bufferCount - 1) {
@@ -197,6 +213,7 @@ class DesktopMusicUtils : MusicUtils() {
                             filled = true
                             alSourceQueueBuffers(sourceID, bufferID)
                         }
+                        renderedSecondsQueue.pop()
                         if (!filled) {
                             run {
                                 val field = OpenALMusic::class.java.getDeclaredField("onCompletionListener")
