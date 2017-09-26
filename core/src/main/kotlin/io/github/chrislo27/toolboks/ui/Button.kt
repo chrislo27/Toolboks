@@ -25,7 +25,9 @@ open class Button<S : ToolboksScreen<*, *>>
             throw IllegalArgumentException("Label parent must be this")
         }
         labels as MutableList
-        labels.add(l)
+        if (l !in labels) {
+            labels.add(l)
+        }
     }
 
     fun removeLabel(l: Label<S>) {
