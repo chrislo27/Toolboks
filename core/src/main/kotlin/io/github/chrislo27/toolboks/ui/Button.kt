@@ -36,7 +36,7 @@ open class Button<S : ToolboksScreen<*, *>>
         }
         labels as MutableList
         if (l !in labels) {
-            labels.add(index, l)
+            labels.add(index.coerceIn(0, labels.size), l)
         }
     }
 
