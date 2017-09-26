@@ -30,6 +30,16 @@ open class Button<S : ToolboksScreen<*, *>>
         }
     }
 
+    fun addLabel(index: Int, l: Label<S>) {
+        if (l.parent !== this) {
+            throw IllegalArgumentException("Label parent must be this")
+        }
+        labels as MutableList
+        if (l !in labels) {
+            labels.add(index, l)
+        }
+    }
+
     fun removeLabel(l: Label<S>) {
         if (l.parent !== this) {
             throw IllegalArgumentException("Label parent must be this")
