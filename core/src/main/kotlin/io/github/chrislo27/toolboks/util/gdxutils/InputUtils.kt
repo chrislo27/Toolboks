@@ -42,3 +42,15 @@ fun Input.isButtonJustPressed(button: Int): Boolean {
 
     return !state && old == true
 }
+
+fun Input.isControlDown(): Boolean {
+    return isKeyPressed(Input.Keys.CONTROL_LEFT) || isKeyPressed(Input.Keys.CONTROL_RIGHT)
+}
+
+fun Input.isAltDown(): Boolean {
+    return isKeyPressed(Input.Keys.ALT_LEFT) || isKeyPressed(Input.Keys.ALT_RIGHT)
+}
+
+fun Input.isShiftDown(): Boolean {
+    return isKeyPressed(Input.Keys.SHIFT_LEFT) || isKeyPressed(Input.Keys.SHIFT_RIGHT)
+}
