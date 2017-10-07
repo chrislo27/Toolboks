@@ -7,6 +7,7 @@ import io.github.chrislo27.toolboks.ToolboksGame
 import io.github.chrislo27.toolboks.lazysound.LazySound
 import io.github.chrislo27.toolboks.util.MemoryUtils
 import org.apache.commons.io.output.TeeOutputStream
+import oshi.SystemInfo
 import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintStream
@@ -43,6 +44,11 @@ object SysOutPiper {
 
         stream = FileOutputStream(file)
 
+        // OSHI related
+        val systemInfo = SystemInfo()
+        val hal = systemInfo.hardware
+        val os = systemInfo.operatingSystem
+
         val ps = PrintStream(stream)
         ps.println("==============\nAUTO-GENERATED\n==============\n")
         val builder = StringBuilder()
@@ -64,8 +70,12 @@ object SysOutPiper {
 
         builder.append("\n")
 
+        val processor = hal.processor
         builder.append("Processor Specifications:\n")
-        builder.append("    Cores: " + MemoryUtils.cores + "\n")
+        builder.append("    Name: ${processor.name}\n")
+        builder.append("    CPU(s): ${processor.physicalProcessorCount} physical, ${processor.logicalProcessorCount} logical\n")
+        builder.append("    Is 64-bit?: ${processor.isCpu64bit}\n")
+        builder.append("    Identifier: ${processor.identifier}\n")
 
         builder.append("\n")
 
