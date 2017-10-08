@@ -47,7 +47,7 @@ object SysOutPiper {
         // OSHI related
         val systemInfo = SystemInfo()
         val hal = systemInfo.hardware
-        val os = systemInfo.operatingSystem
+//        val os = systemInfo.operatingSystem
 
         val ps = PrintStream(stream)
         ps.println("==============\nAUTO-GENERATED\n==============\n")
