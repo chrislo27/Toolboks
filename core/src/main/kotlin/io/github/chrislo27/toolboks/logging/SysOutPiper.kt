@@ -44,11 +44,6 @@ object SysOutPiper {
 
         stream = FileOutputStream(file)
 
-        // OSHI related
-        val systemInfo = SystemInfo()
-        val hal = systemInfo.hardware
-//        val os = systemInfo.operatingSystem
-
         val ps = PrintStream(stream)
         ps.println("==============\nAUTO-GENERATED\n==============\n")
         val builder = StringBuilder()
@@ -70,15 +65,6 @@ object SysOutPiper {
 
         builder.append("\n")
 
-        val processor = hal.processor
-        builder.append("Processor Specifications:\n")
-        builder.append("    Name: ${processor.name}\n")
-        builder.append("    CPU(s): ${processor.physicalProcessorCount} physical, ${processor.logicalProcessorCount} logical\n")
-        builder.append("    Is 64-bit?: ${processor.isCpu64bit}\n")
-        builder.append("    Identifier: ${processor.identifier}\n")
-
-        builder.append("\n")
-
         builder.append("Graphics Specifications:\n")
         builder.append("    Resolution: " + Gdx.graphics.width + "x" + Gdx.graphics.height + "\n")
         builder.append("    Fullscreen: " + Gdx.graphics.isFullscreen + "\n")
@@ -88,6 +74,24 @@ object SysOutPiper {
         ps.println(builder.toString())
         ps.println("\n")
         ps.flush()
+
+        thread(isDaemon = true) {
+            val builder = StringBuilder()
+            // OSHI related
+            val systemInfo = SystemInfo()
+            val hal = systemInfo.hardware
+            val processor = hal.processor
+            builder.append("\n==============\n" +
+                                   "AUTO-GENERATED\n" +
+                                   "==============\n")
+            builder.append("Processor Specifications:\n")
+            builder.append("    Name: ${processor.name}\n")
+            builder.append("    CPU(s): ${processor.physicalProcessorCount} physical, ${processor.logicalProcessorCount} logical\n")
+            builder.append("    Is 64-bit?: ${processor.isCpu64bit}\n")
+            builder.append("    Identifier: ${processor.identifier}\n")
+            builder.append("\n")
+            ps.println(builder.toString())
+        }
 
         newOut = TeeOutputStream(oldOut, stream)
         newErr = TeeOutputStream(oldErr, stream)
