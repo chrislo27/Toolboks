@@ -54,16 +54,16 @@ class CollisionResolver {
         val yExitTime: Float
 
         if (body.velocity.x == 0f) {
-            xEntryTime = java.lang.Float.NEGATIVE_INFINITY
-            xExitTime = java.lang.Float.POSITIVE_INFINITY
+            xEntryTime = Float.NEGATIVE_INFINITY
+            xExitTime = Float.POSITIVE_INFINITY
         } else {
             xEntryTime = xEntryDist / (body.velocity.x * timescale)
             xExitTime = xExitDist / (body.velocity.x * timescale)
         }
 
         if (body.velocity.y == 0f) {
-            yEntryTime = java.lang.Float.NEGATIVE_INFINITY
-            yExitTime = java.lang.Float.POSITIVE_INFINITY
+            yEntryTime = Float.NEGATIVE_INFINITY
+            yExitTime = Float.POSITIVE_INFINITY
         } else {
             yEntryTime = yEntryDist / (body.velocity.y * timescale)
             yExitTime = yExitDist / (body.velocity.y * timescale)
@@ -80,7 +80,7 @@ class CollisionResolver {
         val exitTime = Math.min(xExitTime, yExitTime)
 
         // if there was no collision
-        if (entryTime > exitTime || xEntryTime < 0 && yEntryTime < 0 || xEntryTime > 1 || yEntryTime > 1) {
+        if (entryTime > exitTime || (xEntryTime < 0 && yEntryTime < 0) || xEntryTime > 1 || yEntryTime > 1) {
             result.reset()
             return result
         } else {
@@ -104,7 +104,7 @@ class CollisionResolver {
             }
 
             // return the time of collision
-            result.validate()
+            result.makeValid()
             result.distance = entryTime
             result.collider = body
             result.collidedWith = target

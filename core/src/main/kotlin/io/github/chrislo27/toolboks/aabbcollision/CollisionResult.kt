@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Pool
 
 class CollisionResult() : Pool.Poolable, Comparable<CollisionResult> {
 
-    // normals are faces, ex: (0, 1) is the bottom face, (1, 0) is the right face of the object you collided against
+    // normals are faces, ex: (0, 1) is the top face, (1, 0) is the right face of the object you collided against
     var normalX = 0
     var normalY = 0
 
@@ -32,7 +32,7 @@ class CollisionResult() : Pool.Poolable, Comparable<CollisionResult> {
         return 1f - distance
     }
 
-    fun validate(): CollisionResult {
+    fun makeValid(): CollisionResult {
         invalid = false
         return this
     }
