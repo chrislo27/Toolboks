@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.StreamUtils
 import io.github.chrislo27.toolboks.ToolboksGame
 import io.github.chrislo27.toolboks.lazysound.LazySound
+import io.github.chrislo27.toolboks.oshi.OSHI
 import io.github.chrislo27.toolboks.util.MemoryUtils
 import org.apache.commons.io.output.TeeOutputStream
-import oshi.SystemInfo
 import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintStream
@@ -78,9 +78,8 @@ object SysOutPiper {
         thread(isDaemon = true) {
             val builder = StringBuilder()
             // OSHI related
-            val systemInfo = SystemInfo()
-            val hal = systemInfo.hardware
-            val processor = hal.processor
+            val systemInfo = OSHI.sysInfo
+            val processor = systemInfo.hardware.processor
             builder.append("\n==============\n" +
                                    "AUTO-GENERATED\n" +
                                    "==============\n")

@@ -17,6 +17,7 @@ import io.github.chrislo27.toolboks.font.FreeTypeFont
 import io.github.chrislo27.toolboks.i18n.Localization
 import io.github.chrislo27.toolboks.logging.Logger
 import io.github.chrislo27.toolboks.logging.SysOutPiper
+import io.github.chrislo27.toolboks.oshi.OSHI
 import io.github.chrislo27.toolboks.registry.AssetRegistry
 import io.github.chrislo27.toolboks.registry.ScreenRegistry
 import io.github.chrislo27.toolboks.tick.TickController
@@ -160,8 +161,9 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
 Debug mode: ${Toolboks.DEBUG_KEY_NAME}
   While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N | S - Toggle stage outlines | G - Garbage collect
 Version: $versionString
-Memory usage: ${NumberFormat.getIntegerInstance().format(Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
+Memory: ${NumberFormat.getIntegerInstance().format(Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
                                 MemoryUtils.maxMemory)} KB (${NumberFormat.getIntegerInstance().format(memoryDelta / 1024)} KB/s)
+CPU: ${if (!OSHI.isInitialized) "OSHI not inited by SysOutPiper" else "${OSHI.sysInfo.hardware.processor.name}"}
 
 Screen: ${screen?.javaClass?.canonicalName}
 ${getDebugString()}
