@@ -24,6 +24,7 @@ import io.github.chrislo27.toolboks.tick.TickController
 import io.github.chrislo27.toolboks.tick.TickHandler
 import io.github.chrislo27.toolboks.util.MemoryUtils
 import io.github.chrislo27.toolboks.util.gdxutils.drawCompressed
+import io.github.chrislo27.toolboks.util.gdxutils.isKeyJustReleased
 import io.github.chrislo27.toolboks.version.Version
 import java.text.NumberFormat
 import kotlin.system.measureNanoTime
@@ -66,6 +67,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
     private var memoryDeltaTime: Float = 0f
     private var lastMemory: Long = 0L
     var memoryDelta: Long = 0L
+    private var shouldToggleDebugAfterPress = true
 
     /**
      * Should include the version
@@ -107,11 +109,15 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
         tickController.update()
 
         // render update
-        if (Gdx.input.isKeyJustPressed(Toolboks.DEBUG_KEY)) {
-            Toolboks.debugMode = !Toolboks.debugMode
-            Toolboks.LOGGER.debug("Switched debug mode to ${Toolboks.debugMode}")
+        if (Gdx.input.isKeyJustReleased(Toolboks.DEBUG_KEY)) {
+            if (shouldToggleDebugAfterPress) {
+                Toolboks.debugMode = !Toolboks.debugMode
+                Toolboks.LOGGER.debug("Switched debug mode to ${Toolboks.debugMode}")
+            }
+            shouldToggleDebugAfterPress = true
         }
         if (Gdx.input.isKeyPressed(Toolboks.DEBUG_KEY)) {
+            var pressed = true
             if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
                 val nano = measureNanoTime(Localization::reloadAll)
                 Toolboks.LOGGER.debug("Reloaded I18N from files in ${nano / 1_000_000.0} ms")
@@ -120,6 +126,12 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
                 Toolboks.LOGGER.debug("Toggled stage outlines to ${Toolboks.stageOutlines}")
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
                 System.gc()
+            } else {
+                pressed = false
+            }
+
+            if (shouldToggleDebugAfterPress && pressed) {
+                shouldToggleDebugAfterPress = false
             }
         }
         if (screen != null) {
@@ -163,7 +175,7 @@ Debug mode: ${Toolboks.DEBUG_KEY_NAME}
 Version: $versionString
 Memory: ${NumberFormat.getIntegerInstance().format(Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
                                 MemoryUtils.maxMemory)} KB (${NumberFormat.getIntegerInstance().format(memoryDelta / 1024)} KB/s)
-CPU: ${if (!OSHI.isInitialized) "OSHI not inited by SysOutPiper" else "${OSHI.sysInfo.hardware.processor.name}"}
+CPU: ${if (!OSHI.isInitialized) "OSHI not yet inited by SysOutPiper" else OSHI.sysInfo.hardware.processor.name}
 
 Screen: ${screen?.javaClass?.canonicalName}
 ${getDebugString()}
