@@ -164,7 +164,8 @@ Memory usage: ${NumberFormat.getIntegerInstance().format(Gdx.app.nativeHeap / 10
                                 MemoryUtils.maxMemory)} KB (${NumberFormat.getIntegerInstance().format(memoryDelta / 1024)} KB/s)
 
 Screen: ${screen?.javaClass?.canonicalName}
-${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugString() ?: "" else ""}"""
+${getDebugString()}
+${(screen as? ToolboksScreen<*, *>)?.getDebugString() ?: ""}"""
 
                 font.drawCompressed(batch, string, 8f, Gdx.graphics.height - 8f, Gdx.graphics.width - 16f, Align.left)
 
@@ -172,6 +173,10 @@ ${if (screen is ToolboksScreen<*, *>) (screen as ToolboksScreen<*, *>).getDebugS
                 batch.end()
             }
         }
+    }
+
+    open fun getDebugString(): String {
+        return ""
     }
 
     override fun tickUpdate(tickController: TickController) {
