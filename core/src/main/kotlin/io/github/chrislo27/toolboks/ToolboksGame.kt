@@ -45,6 +45,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
     val versionString: String = version.toString()
     val defaultFontKey: String = "${Toolboks.TOOLBOKS_ASSET_PREFIX}default_font"
     val defaultBorderedFontKey: String = "${Toolboks.TOOLBOKS_ASSET_PREFIX}default_bordered_font"
+    private val numberFormatInstance = NumberFormat.getIntegerInstance()
 
     lateinit var originalResolution: Pair<Int, Int>
         private set
@@ -173,8 +174,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
 Debug mode: ${Toolboks.DEBUG_KEY_NAME}
   While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N | S - Toggle stage outlines | G - Garbage collect
 Version: $versionString
-Memory: ${NumberFormat.getIntegerInstance().format(Gdx.app.nativeHeap / 1024)} / ${NumberFormat.getIntegerInstance().format(
-                                MemoryUtils.maxMemory)} KB (${NumberFormat.getIntegerInstance().format(memoryDelta / 1024)} KB/s)
+Memory: ${numberFormatInstance.format(Gdx.app.nativeHeap / 1024)} / ${numberFormatInstance.format(
+                                MemoryUtils.maxMemory)} KB (${numberFormatInstance.format(memoryDelta / 1024)} KB/s)
 CPU: ${if (!OSHI.isInitialized) "OSHI not yet inited by SysOutPiper" else OSHI.sysInfo.hardware.processor.name}
 
 Screen: ${screen?.javaClass?.canonicalName}
