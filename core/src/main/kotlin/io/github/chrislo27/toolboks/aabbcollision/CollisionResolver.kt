@@ -87,19 +87,15 @@ class CollisionResolver {
             // calculate normal of collided surface
             if (xEntryTime > yEntryTime) {
                 if (xEntryDist < 0.0f) {
-                    result.normalX = 1
-                    result.normalY = 0
+                    result.normal = Normal.RIGHT
                 } else {
-                    result.normalX = -1
-                    result.normalY = 0
+                    result.normal = Normal.LEFT
                 }
             } else {
                 if (yEntryDist < 0.0f) {
-                    result.normalX = 0
-                    result.normalY = 1
+                    result.normal = Normal.TOP
                 } else {
-                    result.normalX = 0
-                    result.normalY = -1
+                    result.normal = Normal.BOTTOM
                 }
             }
 

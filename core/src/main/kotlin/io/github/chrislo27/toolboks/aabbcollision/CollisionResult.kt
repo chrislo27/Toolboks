@@ -5,9 +5,11 @@ import com.badlogic.gdx.utils.Pool
 
 class CollisionResult() : Pool.Poolable, Comparable<CollisionResult> {
 
-    // normals are faces, ex: (0, 1) is the top face, (1, 0) is the right face of the object you collided against
-    var normalX = 0
-    var normalY = 0
+    var normal: Normal = Normal.NONE
+    val normalX: Int
+        get() = normal.x
+    val normalY: Int
+        get() = normal.y
 
     /**
      * The percentage to travel.
@@ -20,8 +22,7 @@ class CollisionResult() : Pool.Poolable, Comparable<CollisionResult> {
     private var invalid = false
 
     override fun reset() {
-        normalY = 0
-        normalX = normalY
+        normal = Normal.NONE
         distance = 1f
         collider = null
         collidedWith = collider
