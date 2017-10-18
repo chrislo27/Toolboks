@@ -3,8 +3,8 @@ package io.github.chrislo27.toolboks.aabbcollision
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.ReflectionPool
-import io.github.chrislo27.toolboks.util.gdxutils.getMaxX
-import io.github.chrislo27.toolboks.util.gdxutils.getMaxY
+import io.github.chrislo27.toolboks.util.gdxutils.maxX
+import io.github.chrislo27.toolboks.util.gdxutils.maxY
 import java.util.*
 
 
@@ -33,19 +33,19 @@ class CollisionResolver {
         val yExitDist: Float
 
         if (body.velocity.x > 0) {
-            xEntryDist = target.bounds.getX() - body.bounds.getMaxX()
-            xExitDist = target.bounds.getMaxX() - body.bounds.getX()
+            xEntryDist = target.bounds.getX() - body.bounds.maxX
+            xExitDist = target.bounds.maxX - body.bounds.getX()
         } else {
-            xEntryDist = target.bounds.getMaxX() - body.bounds.getX()
-            xExitDist = target.bounds.getX() - body.bounds.getMaxX()
+            xEntryDist = target.bounds.maxX - body.bounds.getX()
+            xExitDist = target.bounds.getX() - body.bounds.maxX
         }
 
         if (body.velocity.y > 0) {
-            yEntryDist = target.bounds.getY() - body.bounds.getMaxY()
-            yExitDist = target.bounds.getMaxY() - body.bounds.getY()
+            yEntryDist = target.bounds.getY() - body.bounds.maxY
+            yExitDist = target.bounds.maxY - body.bounds.getY()
         } else {
-            yEntryDist = target.bounds.getMaxY() - body.bounds.getY()
-            yExitDist = target.bounds.getY() - body.bounds.getMaxY()
+            yEntryDist = target.bounds.maxY - body.bounds.getY()
+            yExitDist = target.bounds.getY() - body.bounds.maxY
         }
 
         var xEntryTime: Float
