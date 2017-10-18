@@ -4,10 +4,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import com.badlogic.gdx.backends.lwjgl.LwjglInput
 import io.github.chrislo27.toolboks.ToolboksGame
-import io.github.chrislo27.toolboks.desktop.util.DesktopMusicUtils
-import io.github.chrislo27.toolboks.util.gdxutils.MusicUtils
 
 
+/**
+ * The launcher to use for desktop applications.
+ * The system property `file.encoding` is set to `UTF-8`. The [LwjglInput.keyRepeatTime] is set to `0.05`.
+ */
 class ToolboksDesktopLauncher(val game: ToolboksGame) {
 
     val config = LwjglApplicationConfiguration()
@@ -15,8 +17,6 @@ class ToolboksDesktopLauncher(val game: ToolboksGame) {
     init {
         System.setProperty("file.encoding", "UTF-8")
         LwjglInput.keyRepeatTime = 0.05f
-
-        MusicUtils.instance = DesktopMusicUtils()
     }
 
     inline fun editConfig(func: LwjglApplicationConfiguration.() -> Unit): ToolboksDesktopLauncher {

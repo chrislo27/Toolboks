@@ -9,7 +9,7 @@ import java.util.*
 
 
 /**
- * Swept AABB collision
+ * Swept AABB collision.
  * https://www.gamedev.net/resources/_/technical/game-programming/swept-aabb-collision-detection-and-response-r3084
  */
 class CollisionResolver {
@@ -19,10 +19,16 @@ class CollisionResolver {
     private val broadphase = Rectangle(0f, 0f, 1f, 1f)
     var timescale = 1f
 
+    /**
+     * Return a [CollisionResult] back to the pool.
+     */
     fun returnBorrowedResult(result: CollisionResult) {
         resultPool.free(result)
     }
 
+    /**
+     * Finds the collision point for the moving [body] against the [target].
+     */
     fun findCollisionPoint(body: PhysicsBody, target: PhysicsBody, result: CollisionResult): CollisionResult {
         result.reset()
 
@@ -110,6 +116,10 @@ class CollisionResolver {
 
     }
 
+    /**
+     * Finds a list of collision points between a moving [body] and some [other][others] bodies.
+     * The returned list is sorted by nearest to farthest contact.
+     */
     fun findCollisionPoints(body: PhysicsBody, others: List<PhysicsBody>): List<CollisionResult> {
         val results: List<CollisionResult>
         val borrowed = tempResults
@@ -136,9 +146,14 @@ class CollisionResolver {
         return results.takeUnless(List<CollisionResult>::isEmpty) ?: listOf(resultPool.obtain())
     }
 
+    /**
+     * The same as [findCollisionPoints], but returns the first item in the list. The other items
+     * in the list will be immediately returned to the pool.
+     */
     fun findFirstCollisionPoint(body: PhysicsBody, others: List<PhysicsBody>): CollisionResult {
         val results = findCollisionPoints(body, others)
-        return results[0]
+        results.drop(1).forEach(this::returnBorrowedResult)
+        return results.first()
     }
 
 }

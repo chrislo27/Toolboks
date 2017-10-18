@@ -6,6 +6,9 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Disposable
 
 
+/**
+ * A lazily loaded sound that can be disposed of and recreated later to save memory.
+ */
 class LazySound(val handle: FileHandle) : Disposable {
 
     companion object {

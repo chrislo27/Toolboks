@@ -29,6 +29,10 @@ import io.github.chrislo27.toolboks.version.Version
 import java.text.NumberFormat
 import kotlin.system.measureNanoTime
 
+/**
+ * This class is the base of all games. [ResizeAction] and its other size parameters are behaviours for how resizing works.
+ * This is generally important for fonts that scale up.
+ */
 abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
                             val version: Version,
                             val emulatedSize: Pair<Int, Int>, val resizeAction: ResizeAction,
@@ -103,6 +107,9 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
         Gdx.input.inputProcessor = inputMultiplexer
     }
 
+    /**
+     * This function handles camera updates, debug keystrokes, and clearing.
+     */
     open fun preRender() {
         defaultCamera.update()
         batch.projectionMatrix = defaultCamera.combined
@@ -145,10 +152,17 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
         Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT)
     }
 
+    /**
+     * This is called after the main [render] function is called.
+     */
     open fun postRender() {
 
     }
 
+    /**
+     * The default render function. This calls [preRender], then `super.[render]`, then [postRender].
+     * The debug overlay is also rendered at this time.
+     */
     override fun render() {
         val nano = measureNanoTime {
             preRender()
@@ -190,6 +204,10 @@ ${(screen as? ToolboksScreen<*, *>)?.getDebugString() ?: ""}"""
         }
     }
 
+    /**
+     * This returns a string to be put in the debug overlay above the current screen's debug string. By default this is
+     * an empty string.
+     */
     open fun getDebugString(): String {
         return ""
     }
@@ -200,9 +218,13 @@ ${(screen as? ToolboksScreen<*, *>)?.getDebugString() ?: ""}"""
         }
     }
 
+    /**
+     * This will reset the camera + reload fonts if the resize action is [ResizeAction.KEEP_ASPECT_RATIO]. It then calls
+     * the super-method last.
+     */
     override fun resize(width: Int, height: Int) {
         resetCamera()
-        if (resizeAction != ResizeAction.ANY_SIZE) {
+        if (resizeAction == ResizeAction.KEEP_ASPECT_RATIO) {
             val nano = measureNanoTime {
                 fonts.loadAll(defaultCamera.viewportWidth, defaultCamera.viewportHeight)
             }

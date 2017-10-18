@@ -10,6 +10,9 @@ import io.github.chrislo27.toolboks.Toolboks
 import io.github.chrislo27.toolboks.lazysound.LazySound
 import io.github.chrislo27.toolboks.lazysound.LazySoundLoader
 
+/**
+ * Holds all the assets needed for a game and can be easily disposed of at the end.
+ */
 object AssetRegistry : Disposable {
 
     private const val LOAD_STATE_NONE = 0

@@ -3,6 +3,9 @@ package io.github.chrislo27.toolboks.aabbcollision
 import com.badlogic.gdx.utils.Pool
 
 
+/**
+ * A poolable collision result that returns the time of collision between two bodies and the normal.
+ */
 class CollisionResult() : Pool.Poolable, Comparable<CollisionResult> {
 
     var normal: Normal = Normal.NONE

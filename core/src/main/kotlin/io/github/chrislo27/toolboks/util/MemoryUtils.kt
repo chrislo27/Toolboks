@@ -1,5 +1,8 @@
 package io.github.chrislo27.toolboks.util
 
+/**
+ * Some properties you can use to get the current memory stats *in kilobytes*.
+ */
 object MemoryUtils {
 
     val usedMemory: Int
@@ -11,6 +14,4 @@ object MemoryUtils {
     val freeMemory: Int
         get() = (Runtime.getRuntime().freeMemory() / 1024).toInt()
 
-    val cores: Int
-        get() = Runtime.getRuntime().availableProcessors()
 }

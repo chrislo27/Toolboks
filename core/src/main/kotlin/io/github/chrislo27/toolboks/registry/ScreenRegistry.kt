@@ -5,7 +5,9 @@ import com.badlogic.gdx.utils.Disposable
 import io.github.chrislo27.toolboks.Toolboks
 import io.github.chrislo27.toolboks.ToolboksScreen
 
-
+/**
+ * Holds all the screens for a game.
+ */
 object ScreenRegistry : Disposable {
 
     val screens: Map<String, ToolboksScreen<*, *>> = mutableMapOf()

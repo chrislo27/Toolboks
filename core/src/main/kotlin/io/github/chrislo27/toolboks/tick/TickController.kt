@@ -19,9 +19,6 @@ class TickController {
         private set
 
     var nanoPerTick: Long = -1L
-        set(value) {
-            field = value
-        }
 
     var msPerTick: Long
         get() {

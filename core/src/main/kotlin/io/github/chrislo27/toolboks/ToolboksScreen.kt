@@ -4,9 +4,15 @@ import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.Screen
 import io.github.chrislo27.toolboks.ui.Stage
 
+/**
+ * The main "screen" type class. The [SELF] type parameter should be the same class.
+ */
 @Suppress("UNCHECKED_CAST")
 public abstract class ToolboksScreen<G : ToolboksGame, SELF : ToolboksScreen<G, SELF>>(public val main: G) : Screen, InputProcessor {
 
+    /**
+     * The UI stage. By default it is null.
+     */
     open val stage: Stage<SELF>? = null
 
     override fun render(delta: Float) {

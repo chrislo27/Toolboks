@@ -1,6 +1,9 @@
 package io.github.chrislo27.toolboks.util
 
 
+/**
+ * An assortment of math utilities.
+ */
 object MathHelper {
 
     fun isPointIn(px: Float, py: Float, x: Float, y: Float, w: Float, h: Float): Boolean {

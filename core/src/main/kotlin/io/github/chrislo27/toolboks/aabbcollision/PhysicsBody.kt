@@ -5,6 +5,9 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
 
 
+/**
+ * A simple object with a bounds rectangle and a velocity.
+ */
 class PhysicsBody() : Pool.Poolable {
 
     val bounds = Rectangle(0f, 0f, 1f, 1f)

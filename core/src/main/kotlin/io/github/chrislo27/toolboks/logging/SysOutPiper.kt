@@ -15,6 +15,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
 
+/**
+ * Splits the console out/err into a file and normal console.
+ */
 object SysOutPiper {
 
     lateinit var oldOut: PrintStream

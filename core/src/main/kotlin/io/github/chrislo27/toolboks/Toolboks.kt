@@ -3,6 +3,9 @@ package io.github.chrislo27.toolboks
 import com.badlogic.gdx.Input
 import io.github.chrislo27.toolboks.logging.Logger
 
+/**
+ * Holds constants and some info about Toolboks.
+ */
 object Toolboks {
 
 //    val TOOLBOKS_VERSION: Version = Version(1, 0, 0)
