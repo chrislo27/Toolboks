@@ -12,7 +12,7 @@ class PhysicsBody() : Pool.Poolable {
 
     val bounds = Rectangle(0f, 0f, 1f, 1f)
     val velocity = Vector2()
-    var metadata: Any? = null
+    var metadata: Any = Unit
 
     constructor(x: Float, y: Float, width: Float, height: Float, vx: Float, vy: Float) : this() {
         bounds.set(x, y, width, height)
@@ -22,6 +22,6 @@ class PhysicsBody() : Pool.Poolable {
     override fun reset() {
         bounds.set(0f, 0f, 1f, 1f)
         velocity.set(0f, 0f)
-        metadata = null
+        metadata = Unit
     }
 }
