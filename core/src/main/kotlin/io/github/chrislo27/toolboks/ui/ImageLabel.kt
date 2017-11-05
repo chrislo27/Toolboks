@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.math.Vector2
 import io.github.chrislo27.toolboks.ToolboksScreen
 import io.github.chrislo27.toolboks.util.gdxutils.fillRect
 
@@ -35,6 +36,8 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
     var image: TextureRegion? = null
     var tint: Color = Color(1f, 1f, 1f, 1f)
     var renderType: ImageRendering = ImageRendering.RENDER_FULL
+    var rotation: Float = 0f
+    var rotationPoint = Vector2(0.5f, 0.5f)
 
     override fun render(screen: S, batch: SpriteBatch,
                         shapeRenderer: ShapeRenderer) {
@@ -51,7 +54,12 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
 
         when (renderType) {
             ImageLabel.ImageRendering.RENDER_FULL -> {
-                batch.draw(image, location.realX, location.realY, location.realWidth, location.realHeight)
+                batch.draw(image,
+                           location.realX, location.realY,
+                           rotationPoint.x * location.realWidth, rotationPoint.y * location.realHeight,
+                           location.realWidth, location.realHeight,
+                           1f, 1f,
+                           rotation)
             }
             ImageLabel.ImageRendering.ASPECT_RATIO -> {
                 val x: Float
@@ -70,12 +78,15 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
                     x = location.realWidth / 2 - (w / 2)
                 }
 
-                batch.draw(image, location.realX + x, location.realY + y, w, h)
+                batch.draw(image, location.realX + x, location.realY + y,
+                           rotationPoint.x * w, rotationPoint.y * h,
+                           w, h,
+                           1f, 1f,
+                           rotation)
             }
         }
 
         batch.setColor(old)
-
     }
 
 }
