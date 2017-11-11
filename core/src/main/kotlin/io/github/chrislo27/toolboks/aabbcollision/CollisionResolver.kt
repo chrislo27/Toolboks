@@ -3,6 +3,7 @@ package io.github.chrislo27.toolboks.aabbcollision
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.ReflectionPool
+import io.github.chrislo27.toolboks.util.gdxutils.intersects
 import io.github.chrislo27.toolboks.util.gdxutils.maxX
 import io.github.chrislo27.toolboks.util.gdxutils.maxY
 import java.util.*
@@ -133,7 +134,7 @@ class CollisionResolver {
         broadphase.setHeight(body.bounds.getHeight() + Math.abs(body.velocity.y))
 
         results = others.filter { pb ->
-            pb !== body && pb.bounds.overlaps(broadphase)
+            pb !== body && pb.bounds.intersects(broadphase)
         }.map { pb ->
             val temp = resultPool.obtain()
             borrowed += temp
