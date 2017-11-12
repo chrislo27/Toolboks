@@ -132,6 +132,10 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
 
     }
 
+    open fun onEnterPressed(): Boolean {
+        return false
+    }
+
     override fun render(screen: S, batch: SpriteBatch,
                         shapeRenderer: ShapeRenderer) {
         if (background) {
@@ -283,7 +287,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
 //                } else {
 //                    return false
 //                }
-                return false
+                return onEnterPressed()
             }
             else -> {
                 if (character < 32.toChar()) return false
