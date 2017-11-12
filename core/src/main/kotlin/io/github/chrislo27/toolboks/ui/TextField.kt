@@ -375,7 +375,19 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             return low // key not found
         }
 
-        val px = (xPercent * location.realWidth + xOffset)
+        val rawpx = xPercent * location.realWidth
+        val thing = when {
+            textAlign and Align.center == Align.center -> {
+                rawpx - (location.realWidth / 2 - layout.width / 2)
+            }
+            textAlign and Align.right == Align.right -> {
+                rawpx - (location.realWidth - layout.width)
+            }
+            else -> {
+                rawpx
+            }
+        }
+        val px = (thing + xOffset)
         caret = textPositions.sorted().binarySearch {
             it.compareTo(px)
         }
