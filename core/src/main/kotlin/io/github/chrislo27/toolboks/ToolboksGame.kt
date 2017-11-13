@@ -223,8 +223,10 @@ ${(screen as? ToolboksScreen<*, *>)?.getDebugString() ?: ""}"""
      * the super-method last.
      */
     override fun resize(width: Int, height: Int) {
+        val lastCameraDimensions = defaultCamera.viewportWidth to defaultCamera.viewportHeight
         resetCamera()
-        if (resizeAction == ResizeAction.KEEP_ASPECT_RATIO) {
+        if (resizeAction == ResizeAction.KEEP_ASPECT_RATIO &&
+                (defaultCamera.viewportWidth to defaultCamera.viewportHeight) != lastCameraDimensions) {
             val nano = measureNanoTime {
                 fonts.loadAll(defaultCamera.viewportWidth, defaultCamera.viewportHeight)
             }
