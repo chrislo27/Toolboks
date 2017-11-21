@@ -13,8 +13,6 @@ import io.github.chrislo27.toolboks.util.gdxutils.fillRect
 import io.github.chrislo27.toolboks.util.gdxutils.getTextHeight
 import io.github.chrislo27.toolboks.util.gdxutils.prepareStencilMask
 import io.github.chrislo27.toolboks.util.gdxutils.useStencilMask
-import java.awt.Toolkit
-import java.awt.datatransfer.DataFlavor
 
 
 /**
@@ -235,8 +233,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.V) && control && !alt && !shift) {
                 try {
-                    val data: String = Toolkit.getDefaultToolkit().systemClipboard.getData(
-                            DataFlavor.stringFlavor) as String? ?: return
+                    val data: String = Gdx.app.clipboard.contents ?: return
 
                     if (data.all(canTypeText) && canPaste) {
                         text = text.substring(0, caret) + data + text.substring(caret)
