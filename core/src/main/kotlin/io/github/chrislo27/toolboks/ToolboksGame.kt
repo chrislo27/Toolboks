@@ -164,43 +164,49 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
      * The debug overlay is also rendered at this time.
      */
     override fun render() {
-        val nano = measureNanoTime {
-            preRender()
-            super.render()
-            postRender()
+        try {
+            measureNanoTime {
+                preRender()
+                super.render()
+                postRender()
 
-            memoryDeltaTime += Gdx.graphics.deltaTime
-            if (memoryDeltaTime >= 1f) {
-                memoryDeltaTime = 0f
-                val heap = Gdx.app.nativeHeap
-                memoryDelta = heap - lastMemory
-                lastMemory = heap
-            }
+                memoryDeltaTime += Gdx.graphics.deltaTime
+                if (memoryDeltaTime >= 1f) {
+                    memoryDeltaTime = 0f
+                    val heap = Gdx.app.nativeHeap
+                    memoryDelta = heap - lastMemory
+                    lastMemory = heap
+                }
 
-            if (Toolboks.debugMode) {
-                val font = defaultBorderedFont
-                batch.begin()
-                font.data.setScale(0.75f)
+                if (Toolboks.debugMode) {
+                    val font = defaultBorderedFont
+                    batch.begin()
+                    font.data.setScale(0.75f)
 
-                val fps = Gdx.graphics.framesPerSecond
-                val string =
-                        """FPS: [${if (fps <= 10) "RED" else if (fps < 30) "YELLOW" else "WHITE"}]$fps[]
+                    val fps = Gdx.graphics.framesPerSecond
+                    val string =
+                            """FPS: [${if (fps <= 10) "RED" else if (fps < 30) "YELLOW" else "WHITE"}]$fps[]
 Debug mode: ${Toolboks.DEBUG_KEY_NAME}
   While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N | S - Toggle stage outlines | G - Garbage collect
 Version: $versionString
 Memory: ${numberFormatInstance.format(Gdx.app.nativeHeap / 1024)} / ${numberFormatInstance.format(
-                                MemoryUtils.maxMemory)} KB (${numberFormatInstance.format(memoryDelta / 1024)} KB/s)
+                                    MemoryUtils.maxMemory)} KB (${numberFormatInstance.format(memoryDelta / 1024)} KB/s)
 CPU: ${if (!OSHI.isInitialized) "OSHI not yet inited by SysOutPiper" else OSHI.sysInfo.hardware.processor.name}
 
 Screen: ${screen?.javaClass?.canonicalName}
 ${getDebugString()}
 ${(screen as? ToolboksScreen<*, *>)?.getDebugString() ?: ""}"""
 
-                font.drawCompressed(batch, string, 8f, Gdx.graphics.height - 8f, Gdx.graphics.width - 16f, Align.left)
+                    font.drawCompressed(batch, string, 8f, Gdx.graphics.height - 8f, Gdx.graphics.width - 16f,
+                                        Align.left)
 
-                font.data.setScale(1f)
-                batch.end()
+                    font.data.setScale(1f)
+                    batch.end()
+                }
             }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            Gdx.app.exit()
         }
     }
 
