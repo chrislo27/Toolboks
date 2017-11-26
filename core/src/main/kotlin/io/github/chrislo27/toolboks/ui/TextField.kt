@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.Align
 import io.github.chrislo27.toolboks.ToolboksScreen
-import io.github.chrislo27.toolboks.util.gdxutils.fillRect
-import io.github.chrislo27.toolboks.util.gdxutils.getTextHeight
-import io.github.chrislo27.toolboks.util.gdxutils.prepareStencilMask
-import io.github.chrislo27.toolboks.util.gdxutils.useStencilMask
+import io.github.chrislo27.toolboks.util.gdxutils.*
 
 
 /**
@@ -226,14 +223,13 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         super.frameUpdate(screen)
 
         if (hasFocus) {
-            val control = Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(
-                    Input.Keys.CONTROL_RIGHT)
-            val alt = Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT)
-            val shift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)
+            val control = Gdx.input.isControlDown()
+            val alt = Gdx.input.isAltDown()
+            val shift = Gdx.input.isShiftDown()
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.V) && control && !alt && !shift) {
                 try {
-                    val data: String = Gdx.app.clipboard.contents ?: return
+                    val data: String = Gdx.app.clipboard.contents?.replace("\n", "")?.replace("\r", "") ?: return
 
                     if (data.all(canTypeText) && canPaste) {
                         text = text.substring(0, caret) + data + text.substring(caret)
@@ -250,10 +246,9 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         if (!hasFocus)
             return false
 
-        val control = Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(
-                Input.Keys.CONTROL_RIGHT)
-        val alt = Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT)
-        val shift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)
+        val control = Gdx.input.isControlDown()
+        val alt = Gdx.input.isAltDown()
+        val shift = Gdx.input.isShiftDown()
 
         when (character) {
             TAB -> return false
