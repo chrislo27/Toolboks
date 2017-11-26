@@ -234,6 +234,8 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
                     var data: String = Gdx.app.clipboard.contents ?: return
                     if (!canInputNewlines) {
                         data = data.replace("\n", "").replace("\r", "")
+                    } else {
+                        data = data.replace("\r\n", "\n")
                     }
 
                     if (data.all(canTypeText) && canPaste) {
