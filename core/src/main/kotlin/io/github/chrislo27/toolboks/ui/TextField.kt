@@ -30,6 +30,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         const val CARET_WIDTH: Float = 2f
         const val CARET_MOVE_TIMER: Float = 0.05f
         const val INITIAL_CARET_TIMER: Float = 0.4f
+        const val NEWLINE_WRAP: Char = '\uE056'
     }
 
     override var background: Boolean = false
@@ -38,18 +39,18 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             val old = field
             field = value
             if (old != value) {
+                renderedText = (if (isPassword) BULLET.toString().repeat(text.length) else text).replace("\r\n", "$NEWLINE_WRAP").replace('\r', NEWLINE_WRAP).replace('\n', NEWLINE_WRAP)
+
                 val font = getFont()
                 val wasMarkup = font.data.markupEnabled
                 font.data.markupEnabled = false
-                layout.setText(font, text)
+                layout.setText(font, renderedText)
                 font.data.markupEnabled = wasMarkup
                 calculateTextPositions()
                 onTextChange(old)
             }
 
             caret = caret.coerceIn(0, text.length)
-
-            renderedText = if (isPassword) BULLET.toString().repeat(text.length) else text
         }
     private var renderedText: String = ""
     private val textPositions: List<Float> = mutableListOf()
@@ -100,6 +101,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             }
         }
     var canPaste = true
+    var canInputNewlines = false
 
     open fun getFont(): BitmapFont =
             palette.font
@@ -146,13 +148,13 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
         val labelHeight = location.realHeight
         val font = getFont()
 
+        val isUsingEmpty = !hasFocus && renderedText.isEmpty()
+        val text = if (!isUsingEmpty) renderedText else textWhenEmpty
         val textHeight = font.getTextHeight(text, labelWidth, false)
 
         val y: Float
         y = location.realY + location.realHeight / 2 + textHeight / 2
 
-        val isUsingEmpty = !hasFocus && renderedText.isEmpty()
-        val text = if (!isUsingEmpty) renderedText else textWhenEmpty
         val oldColor = font.color
         val oldScale = font.scaleX
         val wasMarkupEnabled = font.data.markupEnabled
@@ -229,7 +231,10 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.V) && control && !alt && !shift) {
                 try {
-                    val data: String = Gdx.app.clipboard.contents?.replace("\n", "")?.replace("\r", "") ?: return
+                    var data: String = Gdx.app.clipboard.contents ?: return
+                    if (!canInputNewlines) {
+                        data = data.replace("\n", "").replace("\r", "")
+                    }
 
                     if (data.all(canTypeText) && canPaste) {
                         text = text.substring(0, caret) + data + text.substring(caret)
@@ -273,13 +278,15 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
                 }
             }
             ENTER_ANDROID, ENTER_DESKTOP -> {
-//                if (multiline) {
-//                    text += "\n"
-//                    return true
-//                } else {
-//                    return false
-//                }
-                return onEnterPressed()
+                return if (canInputNewlines && shift && !alt && !control) {
+                    text = text.substring(0, caret) + "\n" + text.substring(caret)
+                    caret++
+                    caretMoveTimer = 0f
+
+                    true
+                } else {
+                    onEnterPressed()
+                }
             }
             else -> {
                 if (character < 32.toChar()) return false
