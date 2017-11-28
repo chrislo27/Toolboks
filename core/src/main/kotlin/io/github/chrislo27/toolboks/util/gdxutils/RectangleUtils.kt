@@ -13,6 +13,6 @@ fun Rectangle.overlapsEpsilon(r: Rectangle, epsilon: Float = 0.0001f): Boolean {
 /**
  * Same as [Rectangle.overlaps] but has equality instead of just less/greater than comparisons.
  */
-fun Rectangle.intersects(r: Rectangle): Boolean {
-    return this.overlapsEpsilon(r) || (x == r.x && y == r.y && maxX == r.maxX && maxY == r.maxY)
+fun Rectangle.intersects(r: Rectangle, epsilon: Float = 0.0001f): Boolean {
+    return this.overlapsEpsilon(r, epsilon) || (x == r.x && y == r.y && maxX == r.maxX && maxY == r.maxY)
 }
