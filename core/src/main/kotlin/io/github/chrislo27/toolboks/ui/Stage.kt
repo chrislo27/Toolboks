@@ -18,7 +18,7 @@ open class Stage<S : ToolboksScreen<*, *>>
 
     override val stage: Stage<S>
         get() = this
-    open val elements: MutableList<UIElement<S>> = mutableListOf()
+    val elements: MutableList<UIElement<S>> = mutableListOf()
 
     private var calledFromUpdatePositions: Boolean = false
 
