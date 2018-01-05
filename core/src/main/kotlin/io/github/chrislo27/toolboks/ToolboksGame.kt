@@ -1,9 +1,6 @@
 package io.github.chrislo27.toolboks
 
-import com.badlogic.gdx.Game
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
@@ -241,7 +238,15 @@ ${(screen as? ToolboksScreen<*, *>)?.getDebugString() ?: ""}"""
         super.resize(width, height)
     }
 
+    override fun setScreen(screen: Screen?) {
+        val current = getScreen()
+        super.setScreen(screen)
+        Toolboks.LOGGER.debug("Changed screens from ${current?.javaClass?.name} to ${screen?.javaClass?.name}")
+    }
+
     override fun dispose() {
+        Toolboks.LOGGER.info("Starting dispose call")
+
         super.dispose()
 
         batch.dispose()
@@ -251,6 +256,8 @@ ${(screen as? ToolboksScreen<*, *>)?.getDebugString() ?: ""}"""
 
         ScreenRegistry.dispose()
         AssetRegistry.dispose()
+
+        Toolboks.LOGGER.info("Dispose call finished, goodbye!")
     }
 
     abstract fun createDefaultFont(): FreeTypeFont
