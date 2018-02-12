@@ -120,7 +120,7 @@ object Localization {
         return currentBundle.bundle[key]
     }
 
-    operator fun get(key: String, vararg args: Any): String {
+    operator fun get(key: String, vararg args: Any?): String {
         if (checkMissing(key))
             return key
 
