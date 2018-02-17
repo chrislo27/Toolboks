@@ -71,6 +71,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
     var memoryDelta: Long = 0L
     private var shouldToggleDebugAfterPress = true
 
+    private val disposeCalls: MutableList<Runnable> = mutableListOf()
+
     /**
      * Should include the version
      */
@@ -249,6 +251,14 @@ ${(screen as? ToolboksScreen<*, *>)?.getDebugString() ?: ""}"""
 
         super.dispose()
 
+        disposeCalls.forEach {
+            try {
+                it.run()
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
+        }
+
         batch.dispose()
         shapeRenderer.dispose()
         fonts.dispose()
@@ -258,6 +268,14 @@ ${(screen as? ToolboksScreen<*, *>)?.getDebugString() ?: ""}"""
         AssetRegistry.dispose()
 
         Toolboks.LOGGER.info("Dispose call finished, goodbye!")
+    }
+
+    fun addDisposeCall(runnable: Runnable) {
+        disposeCalls += runnable
+    }
+
+    fun removeDisposeCall(runnable: Runnable) {
+        disposeCalls -= runnable
     }
 
     abstract fun createDefaultFont(): FreeTypeFont
