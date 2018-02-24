@@ -86,6 +86,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
     var canTypeText: (Char) -> Boolean = {
         true
     }
+    var characterLimit: Int = -1
     private var caretTimer: Float = 0f
     private var caretMoveTimer: Float = -1f
     var isPassword: Boolean = false
@@ -238,7 +239,12 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
 
                     if (data.all(canTypeText) && canPaste) {
                         text = text.substring(0, caret) + data + text.substring(caret)
-                        caret += data.length
+                        if (characterLimit > 0 && text.length > characterLimit) {
+                            text = text.substring(0, characterLimit)
+                            caret = text.length
+                        } else {
+                            caret += data.length
+                        }
                         caretMoveTimer = 0f
                     }
                 } catch (ignored: Exception) {
@@ -290,7 +296,7 @@ open class TextField<S : ToolboksScreen<*, *>>(override var palette: UIPalette, 
             }
             else -> {
                 if (character < 32.toChar()) return false
-                if (!canTypeText(character))
+                if (!canTypeText(character) || (characterLimit > 0 && text.length >= characterLimit))
                     return false
 
                 text = text.substring(0, caret) + character + text.substring(caret)
