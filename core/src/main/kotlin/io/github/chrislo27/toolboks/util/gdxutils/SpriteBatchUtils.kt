@@ -18,8 +18,8 @@ fun SpriteBatch.fillRect(rect: Rectangle) {
 fun SpriteBatch.drawRect(x: Float, y: Float, width: Float, height: Float, lineX: Float, lineY: Float) {
     this.draw(ToolboksGame.smallTexture, x, y, width, lineY.coerceAtMost(height))
     this.draw(ToolboksGame.smallTexture, x, y + height, width, -(lineY.coerceAtMost(height)))
-    this.draw(ToolboksGame.smallTexture, x, y + lineY, lineX.coerceAtMost(width), height - lineY * 2)
-    this.draw(ToolboksGame.smallTexture, x + width, y + lineY, -(lineX.coerceAtMost(width)), height - lineY * 2)
+    this.draw(ToolboksGame.smallTexture, x, y + lineY, lineX.coerceAtMost(width), height - (lineY * 2).coerceAtMost(height))
+    this.draw(ToolboksGame.smallTexture, x + width, y + lineY, -(lineX.coerceAtMost(width)), height - (lineY * 2).coerceAtMost(height))
 }
 
 fun SpriteBatch.drawRect(x: Float, y: Float, width: Float, height: Float, line: Float) {
