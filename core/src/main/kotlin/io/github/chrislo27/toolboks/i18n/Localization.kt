@@ -3,6 +3,7 @@ package io.github.chrislo27.toolboks.i18n
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.I18NBundle
+import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.ObjectMap
 import io.github.chrislo27.toolboks.Toolboks
 import java.util.*
@@ -15,8 +16,11 @@ import kotlin.properties.Delegates
  */
 object Localization {
 
-    val baseHandle: FileHandle by lazy {
+    val DEFAULT_BASE_HANDLE: FileHandle by lazy {
         Gdx.files.internal("localization/default")
+    }
+    val DEFAULT_LANG_DEFINITION_FILE: FileHandle by lazy {
+        Gdx.files.internal("localization/langs.json")
     }
 
     var currentIndex: Int by Delegates.observable(0) { _, old, new ->
@@ -36,10 +40,33 @@ object Localization {
         }
     val bundles: MutableList<ToolboksBundle> = mutableListOf()
     val listeners: MutableList<(oldBundle: ToolboksBundle) -> Unit> = CopyOnWriteArrayList()
+    /**
+     * Base, Lang
+     */
+    private var lastLoadedFiles: Pair<FileHandle, FileHandle> = DEFAULT_BASE_HANDLE to DEFAULT_LANG_DEFINITION_FILE
 
-    @JvmStatic
-    fun createBundle(locale: NamedLocale): ToolboksBundle {
+    fun createBundle(locale: NamedLocale, baseHandle: FileHandle = DEFAULT_BASE_HANDLE): ToolboksBundle {
         return ToolboksBundle(locale, I18NBundle.createBundle(baseHandle, locale.locale, "UTF-8"))
+    }
+
+    fun getBundlesFromLangFile(langDefFile: FileHandle = DEFAULT_LANG_DEFINITION_FILE,
+                               baseHandle: FileHandle = DEFAULT_BASE_HANDLE): List<ToolboksBundle> {
+        lastLoadedFiles = baseHandle to langDefFile
+        return Json().fromJson(Array<LanguageObject>::class.java, langDefFile)
+                .map(LanguageObject::toNamedLocale)
+                .map {
+                    createBundle(it, baseHandle)
+                }
+    }
+
+    fun loadBundlesFromLangFile(langDefFile: FileHandle = DEFAULT_LANG_DEFINITION_FILE,
+                                baseHandle: FileHandle = DEFAULT_BASE_HANDLE): List<ToolboksBundle> {
+        val list = getBundlesFromLangFile(langDefFile, baseHandle)
+
+        bundles.clear()
+        bundles.addAll(list)
+
+        return list
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -72,12 +99,16 @@ object Localization {
         }
     }
 
-    fun reloadAll() {
-        val old = bundles.toList()
+    fun reloadAll(loadFromLangDef: Boolean) {
+        if (!loadFromLangDef) {
+            val old = bundles.toList()
 
-        bundles.clear()
-        old.mapTo(bundles) {
-            createBundle(it.locale)
+            bundles.clear()
+            old.mapTo(bundles) {
+                createBundle(it.locale)
+            }
+        } else {
+            loadBundlesFromLangFile(lastLoadedFiles.second, lastLoadedFiles.first)
         }
     }
 
