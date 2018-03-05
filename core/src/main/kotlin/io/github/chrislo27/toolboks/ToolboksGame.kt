@@ -70,7 +70,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
     private var lastMemory: Long = 0L
     var memoryDelta: Long = 0L
     private var shouldToggleDebugAfterPress = true
-
+    val startTimeMillis: Long = System.currentTimeMillis()
     private val disposeCalls: MutableList<Runnable> = mutableListOf()
 
     /**
