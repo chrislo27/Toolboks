@@ -108,17 +108,21 @@ object AssetRegistry : Disposable {
         while (load(Int.MAX_VALUE.toFloat()) < 1f);
     }
 
-    operator inline fun <reified T> get(key: String): T {
+    inline operator fun <reified T> get(key: String): T {
         val unmanaged = (unmanagedAssets[key] as T?)
         if (unmanaged != null) {
             return unmanaged
+        }
+
+        if (assetMap[key] == null) {
+            error("Key not found in mappings: $key")
         }
 
         if (!manager.isLoaded(assetMap[key], T::class.java)) {
             if (T::class === Texture::class) {
                 return missingTexture as T
             }
-            throw IllegalStateException("Asset not loaded/found: $key")
+            error("Asset not loaded/found: $key")
         }
 
         return manager.get(assetMap[key], T::class.java)
