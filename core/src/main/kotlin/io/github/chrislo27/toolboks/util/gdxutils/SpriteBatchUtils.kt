@@ -36,6 +36,9 @@ fun SpriteBatch.drawRect(rect: Rectangle, line: Float) {
 
 private val quadVerts: FloatArray = FloatArray(20)
 
+/**
+ * bottom left, bottom right, top right, top left
+ */
 fun SpriteBatch.drawQuad(x1: Float, y1: Float, color1: Color,
                          x2: Float, y2: Float, color2: Color,
                          x3: Float, y3: Float, color3: Color,
@@ -48,6 +51,9 @@ fun SpriteBatch.drawQuad(x1: Float, y1: Float, color1: Color,
                   texture)
 }
 
+/**
+ * bottom left, bottom right, top right, top left
+ */
 fun SpriteBatch.drawQuad(x1: Float, y1: Float, color1: Float,
                          x2: Float, y2: Float, color2: Float,
                          x3: Float, y3: Float, color3: Float,
