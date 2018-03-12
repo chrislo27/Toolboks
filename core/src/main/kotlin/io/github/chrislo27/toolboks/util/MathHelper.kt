@@ -16,7 +16,8 @@ object MathHelper {
         return px in realX..(realX + width) && py in realY..(realY + height)
     }
 
-    fun isIntersecting(x1: Float, y1: Float, w1: Float, h1: Float, x2: Float, y2: Float, w2: Float, h2: Float): Boolean {
+    fun isIntersecting(x1: Float, y1: Float, w1: Float, h1: Float, x2: Float, y2: Float, w2: Float,
+                       h2: Float): Boolean {
         val width1 = if (w1 < 0) Math.abs(w1) else w1
         val height1 = if (h1 < 0) Math.abs(h1) else h1
         val realX1 = if (w1 < 0) x1 - width1 else x1
@@ -31,39 +32,70 @@ object MathHelper {
     }
 
     fun snapToNearest(value: Float, interval: Float): Float {
-        val interval = Math.abs(interval)
-        if (interval == 0f)
+        val abs = Math.abs(interval)
+        if (abs == 0f)
             return value
-        return Math.round(value / interval) * interval
+        return Math.round(value / abs) * abs
     }
 
-    fun getSawtoothWave(): Float {
-        return getSawtoothWave(System.currentTimeMillis(), 1f)
+    fun getSawtoothWave(time: Long, seconds: Float): Float {
+        if (seconds == 0f) throw IllegalArgumentException("Seconds cannot be zero")
+        return time % Math.round(seconds * 1000) / (seconds * 1000f)
     }
 
     fun getSawtoothWave(seconds: Float): Float {
         return getSawtoothWave(System.currentTimeMillis(), seconds)
     }
 
-    fun getSawtoothWave(time: Long, seconds: Float): Float {
-        if (seconds == 0f) throw IllegalArgumentException("Seconds cannot be zero!")
-        return time % Math.round(seconds * 1000) / (seconds * 1000f)
-    }
-
     fun getTriangleWave(ms: Long, seconds: Float): Float {
         val f = getSawtoothWave(ms, seconds)
-        if (f >= 0.5f) {
-            return (1f - f) * 2
+        return if (f >= 0.5f) {
+            (1f - f) * 2
         } else
-            return f * 2
+            f * 2
     }
 
     fun getTriangleWave(sec: Float): Float {
         return getTriangleWave(System.currentTimeMillis(), sec)
     }
 
-    fun getTriangleWave(): Float {
-        return getTriangleWave(1f)
+    /**
+     * The peaks of the sine wave will be returned as 1.0 and the troughs will be 0.0.
+     * Starts at 0.5. Note that the [seconds] argument indicates the period from centre to centre.
+     */
+    fun getSineWave(ms: Long, seconds: Float): Float {
+        if (seconds == 0f) throw IllegalArgumentException("Seconds cannot be zero")
+        return 0.5f * Math.sin(Math.PI / seconds * (ms / 1000.0)).toFloat() + 0.5f
+    }
+
+    fun getSineWave(sec: Float): Float {
+        return getSineWave(System.currentTimeMillis(), sec)
+    }
+
+    /**
+     * The peaks of the cosine wave will be returned as 1.0 and the troughs will be 0.0.
+     * Starts at 1. Note that the [seconds] argument indicates the period from peak to trough.
+     */
+    fun getCosineWave(ms: Long, seconds: Float): Float {
+        if (seconds == 0f) throw IllegalArgumentException("Seconds cannot be zero")
+        return 0.5f * Math.cos(Math.PI / seconds * (ms / 1000.0)).toFloat() + 0.5f
+    }
+
+    fun getCosineWave(sec: Float): Float {
+        return getCosineWave(System.currentTimeMillis(), sec)
+    }
+
+    /**
+     * The peaks of the cosine wave will be returned as 1.0 and the troughs will be 0.0.
+     * Starts at 0. Note that the [seconds] argument indicates the period from peak to trough.
+     */
+    fun getBaseCosineWave(ms: Long, seconds: Float): Float {
+        if (seconds == 0f) throw IllegalArgumentException("Seconds cannot be zero")
+        return -0.5f * Math.cos(Math.PI / seconds * (ms / 1000.0)).toFloat() + 0.5f
+    }
+
+    fun getBaseCosineWave(sec: Float): Float {
+        return getBaseCosineWave(System.currentTimeMillis(), sec)
     }
 
 }
