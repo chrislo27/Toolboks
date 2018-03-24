@@ -5,7 +5,7 @@ package io.github.chrislo27.toolboks.version
  * A simple semantic version class. Comparisons can be made which only use [major], [minor], and [patch].
  * There are special constants you may use in the [companion object][Companion].
  */
-class Version(val major: Int, val minor: Int, val patch: Int, val suffix: String = "") : Comparable<Version> {
+data class Version(val major: Int, val minor: Int, val patch: Int, val suffix: String = "") : Comparable<Version> {
 
     override fun compareTo(other: Version): Int {
         return numericalValue - other.numericalValue
