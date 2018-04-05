@@ -188,7 +188,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
                     val string =
                             """FPS: [${if (fps <= 10) "RED" else if (fps < 30) "YELLOW" else "WHITE"}]$fps[]
 Debug mode: ${Toolboks.DEBUG_KEY_NAME}
-  While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload I18N | S - Toggle stage outlines | G - Garbage collect
+  While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload L10N | S - Stage outlines | G - gc
 Version: $versionString
 Memory: ${numberFormatInstance.format(Gdx.app.nativeHeap / 1024)} / ${numberFormatInstance.format(
                                     MemoryUtils.maxMemory)} KB (${numberFormatInstance.format(memoryDelta / 1024)} KB/s)
