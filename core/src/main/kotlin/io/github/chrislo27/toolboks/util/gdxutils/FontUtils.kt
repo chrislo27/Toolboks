@@ -41,7 +41,7 @@ fun BitmapFont.scaleMul(coefficient: Float) {
 }
 
 fun BitmapFont.drawCompressed(batch: SpriteBatch, text: String, x: Float, y: Float, width: Float,
-                              align: Int) {
+                              align: Int): GlyphLayout {
     val font = this
     val textWidth = this.getTextWidth(text)
     val oldScaleX = font.data.scaleX
@@ -50,13 +50,15 @@ fun BitmapFont.drawCompressed(batch: SpriteBatch, text: String, x: Float, y: Flo
         font.data.scaleX = (width / textWidth) * oldScaleX
     }
 
-    font.draw(batch, text, x, y, width, align, false)
+    val layout = font.draw(batch, text, x, y, width, align, false)
 
     font.data.scaleX = oldScaleX
+
+    return layout
 }
 
 fun BitmapFont.drawConstrained(batch: SpriteBatch, text: String, x: Float, y: Float, width: Float, height: Float,
-                               align: Int) {
+                               align: Int): GlyphLayout {
     val font = this
     val textWidth = this.getTextWidth(text)
     val textHeight = this.getTextHeight(text, width, true)
@@ -73,9 +75,11 @@ fun BitmapFont.drawConstrained(batch: SpriteBatch, text: String, x: Float, y: Fl
         font.data.down = (height / textHeight) * oldLineHeight
     }
 
-    font.draw(batch, text, x, y, width, align, true)
+    val layout = font.draw(batch, text, x, y, width, align, true)
 
     font.data.scaleX = oldScaleX
     font.data.scaleY = oldScaleY
     font.data.down = oldLineHeight
+
+    return layout
 }
