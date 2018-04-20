@@ -26,9 +26,14 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
         RENDER_FULL,
 
         /**
-         * Maintains the region's original aspect ratio, attempting to maximize space.
+         * Maintains the UI element's original aspect ratio, attempting to maximize space but not oversize.
          */
-        ASPECT_RATIO
+        ASPECT_RATIO,
+
+        /**
+         * Maintains the REGION's aspect ratio, oversizing if necessary,
+         */
+        IMAGE_ASPECT_RATIO
 
     }
 
@@ -61,22 +66,19 @@ open class ImageLabel<S : ToolboksScreen<*, *>>
                            1f, 1f,
                            rotation)
             }
-            ImageLabel.ImageRendering.ASPECT_RATIO -> {
+            ImageLabel.ImageRendering.ASPECT_RATIO, ImageRendering.IMAGE_ASPECT_RATIO -> {
+                val aspectWidth = location.realWidth / image.regionWidth
+                val aspectHeight = location.realHeight / image.regionHeight
+                val aspectRatio = if (renderType == ImageRendering.ASPECT_RATIO) Math.min(aspectWidth, aspectHeight) else Math.max(aspectWidth, aspectHeight)
                 val x: Float
                 val y: Float
                 val w: Float
                 val h: Float
-                if (location.realWidth <= location.realHeight) { // wider than tall
-                    w = location.realWidth
-                    x = location.realWidth / 2 - w / 2
-                    h = w * (image.regionHeight.toFloat() / image.regionWidth)
-                    y = location.realHeight / 2 - (h / 2)
-                } else {
-                    h = location.realHeight
-                    y = location.realHeight / 2 - h / 2
-                    w = h * (image.regionWidth.toFloat() / image.regionHeight)
-                    x = location.realWidth / 2 - (w / 2)
-                }
+
+                w = image.regionWidth * aspectRatio
+                h = image.regionHeight * aspectRatio
+                x = location.realWidth / 2 - (w / 2)
+                y = location.realHeight / 2 - (h / 2)
 
                 batch.draw(image, location.realX + x, location.realY + y,
                            rotationPoint.x * w, rotationPoint.y * h,
