@@ -108,6 +108,17 @@ object AssetRegistry : Disposable {
         while (load(Int.MAX_VALUE.toFloat()) < 1f);
     }
 
+    operator fun contains(key: String): Boolean {
+        return key in unmanagedAssets || key in assetMap
+    }
+
+    inline fun <reified T> containsAsType(key: String): Boolean {
+        if (!contains(key))
+            return false
+
+        return (unmanagedAssets[key] as T?) != null || manager.isLoaded(assetMap[key], T::class.java)
+    }
+
     inline operator fun <reified T> get(key: String): T {
         val unmanaged = (unmanagedAssets[key] as T?)
         if (unmanaged != null) {
