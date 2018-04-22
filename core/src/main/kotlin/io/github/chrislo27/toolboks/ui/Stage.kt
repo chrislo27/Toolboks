@@ -43,15 +43,17 @@ open class Stage<S : ToolboksScreen<*, *>>
         batch.projectionMatrix = oldProj
     }
 
-    override fun drawOutline(batch: SpriteBatch, camera: OrthographicCamera, lineThickness: Float) {
-        if (camera !== this.camera)
-            error("Camera passed in wasn't the stage's camera")
-        val old = batch.packedColor
-        batch.color = Color.ORANGE
-        super.drawOutline(batch, camera, lineThickness)
-        batch.setColor(old)
-        elements.forEach {
-            it.drawOutline(batch, this.camera, lineThickness)
+    override fun drawOutline(batch: SpriteBatch, camera: OrthographicCamera, lineThickness: Float, onlyVisible: Boolean) {
+        if (!onlyVisible || this.visible) {
+            if (camera !== this.camera)
+                error("Camera passed in wasn't the stage's camera")
+            val old = batch.packedColor
+            batch.color = Color.ORANGE
+            super.drawOutline(batch, camera, lineThickness, onlyVisible)
+            batch.setColor(old)
+            elements.forEach {
+                it.drawOutline(batch, this.camera, lineThickness, onlyVisible)
+            }
         }
     }
 
@@ -84,7 +86,7 @@ open class Stage<S : ToolboksScreen<*, *>>
         val calledFromUpdatePositions = calledFromUpdatePositions
         this.calledFromUpdatePositions = false
         if (parent == null && !calledFromUpdatePositions) {
-            error("onResize cannot be called without a parent. You're dumb, and should use updatePositions instead.")
+            error("onResize cannot be called without a parent. Use updatePositions instead.")
         }
         super.onResize(width, height)
         if (elements.any { it.parent !== this }) {

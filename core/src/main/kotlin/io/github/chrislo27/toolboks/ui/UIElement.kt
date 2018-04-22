@@ -104,9 +104,11 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
         return false
     }
 
-    open fun drawOutline(batch: SpriteBatch, camera: OrthographicCamera, lineThickness: Float = 1f) {
-        batch.drawRect(location.realX, location.realY, location.realWidth, location.realHeight,
-                       (camera.viewportWidth / Gdx.graphics.width) * lineThickness)
+    open fun drawOutline(batch: SpriteBatch, camera: OrthographicCamera, lineThickness: Float = 1f, onlyVisible: Boolean) {
+        if (!onlyVisible || this.visible) {
+            batch.drawRect(location.realX, location.realY, location.realWidth, location.realHeight,
+                           (camera.viewportWidth / Gdx.graphics.width) * lineThickness)
+        }
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {

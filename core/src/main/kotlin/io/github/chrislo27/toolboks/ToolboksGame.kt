@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.Align
+import io.github.chrislo27.toolboks.Toolboks.StageOutlineMode.ALL
+import io.github.chrislo27.toolboks.Toolboks.StageOutlineMode.NONE
+import io.github.chrislo27.toolboks.Toolboks.StageOutlineMode.ONLY_VISIBLE
 import io.github.chrislo27.toolboks.font.FontHandler
 import io.github.chrislo27.toolboks.font.FreeTypeFont
 import io.github.chrislo27.toolboks.i18n.Localization
@@ -22,6 +25,7 @@ import io.github.chrislo27.toolboks.tick.TickHandler
 import io.github.chrislo27.toolboks.util.MemoryUtils
 import io.github.chrislo27.toolboks.util.gdxutils.drawCompressed
 import io.github.chrislo27.toolboks.util.gdxutils.isKeyJustReleased
+import io.github.chrislo27.toolboks.util.gdxutils.isShiftDown
 import io.github.chrislo27.toolboks.version.Version
 import java.text.NumberFormat
 import kotlin.system.measureNanoTime
@@ -131,7 +135,9 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
                 }
                 Toolboks.LOGGER.debug("Reloaded I18N from files in ${nano / 1_000_000.0} ms")
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-                Toolboks.stageOutlines = !Toolboks.stageOutlines
+                Toolboks.stageOutlines = if (Gdx.input.isShiftDown()) {
+                    if (Toolboks.stageOutlines == ONLY_VISIBLE) ALL else ONLY_VISIBLE
+                } else if (Toolboks.stageOutlines == NONE) ALL else NONE
                 Toolboks.LOGGER.debug("Toggled stage outlines to ${Toolboks.stageOutlines}")
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
                 System.gc()
@@ -188,7 +194,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
                     val string =
                             """FPS: [${if (fps <= 10) "RED" else if (fps < 30) "YELLOW" else "WHITE"}]$fps[]
 Debug mode: ${Toolboks.DEBUG_KEY_NAME}
-  While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload L10N | S - Stage outlines | G - gc
+  While holding ${Toolboks.DEBUG_KEY_NAME}: I - Reload L10N | S - Stage outlines (SHIFT for only visible) | G - gc
 Version: $versionString
 Memory: ${numberFormatInstance.format(Gdx.app.nativeHeap / 1024)} / ${numberFormatInstance.format(
                                     MemoryUtils.maxMemory)} KB (${numberFormatInstance.format(memoryDelta / 1024)} KB/s)

@@ -22,10 +22,10 @@ public abstract class ToolboksScreen<G : ToolboksGame, SELF : ToolboksScreen<G, 
 
             batch.begin()
             stage.render(this as SELF, batch, main.shapeRenderer)
-            if (Toolboks.stageOutlines) {
+            if (Toolboks.stageOutlines != Toolboks.StageOutlineMode.NONE) {
                 val old = batch.packedColor
                 batch.setColor(0f, 1f, 0f, 1f)
-                stage.drawOutline(batch, stage.camera)
+                stage.drawOutline(batch, stage.camera, 1f, Toolboks.stageOutlines == Toolboks.StageOutlineMode.ONLY_VISIBLE)
                 batch.setColor(old)
             }
             batch.end()
