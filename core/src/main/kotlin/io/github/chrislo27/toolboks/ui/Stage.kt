@@ -20,6 +20,7 @@ open class Stage<S : ToolboksScreen<*, *>>
         get() = this
     val elements: MutableList<UIElement<S>> = mutableListOf()
 
+    @Volatile
     private var calledFromUpdatePositions: Boolean = false
 
     constructor(parent: UIElement<S>?, camera: OrthographicCamera) : super(parent, null) {
