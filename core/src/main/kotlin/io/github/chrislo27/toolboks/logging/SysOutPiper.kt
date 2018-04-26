@@ -30,7 +30,8 @@ object SysOutPiper {
 
     private lateinit var stream: FileOutputStream
 
-    private @Volatile var piped: Boolean = false
+    @Volatile
+    private var piped: Boolean = false
 
     fun pipe(args: List<String>, game: ToolboksGame) {
         if (piped)
@@ -62,6 +63,7 @@ object SysOutPiper {
         builder.append("    Java Version: " + System.getProperty("java.version") + " " + System.getProperty(
                 "sun.arch.data.model") + " bit" + "\n")
         builder.append("    Java Vendor: ${System.getProperty("java.vendor")}\n")
+        builder.append("    Kotlin Version: ${kotlin.KotlinVersion.CURRENT}")
         builder.append("    OS Name: " + System.getProperty("os.name") + "\n")
         builder.append("    OS Version: " + System.getProperty("os.version") + "\n")
         builder.append("    JVM memory available: " + MemoryUtils.maxMemory + " KB\n")
