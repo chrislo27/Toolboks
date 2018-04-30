@@ -27,6 +27,7 @@ import io.github.chrislo27.toolboks.util.gdxutils.drawCompressed
 import io.github.chrislo27.toolboks.util.gdxutils.isKeyJustReleased
 import io.github.chrislo27.toolboks.util.gdxutils.isShiftDown
 import io.github.chrislo27.toolboks.version.Version
+import java.io.File
 import java.text.NumberFormat
 import kotlin.system.measureNanoTime
 
@@ -34,7 +35,7 @@ import kotlin.system.measureNanoTime
  * This class is the base of all games. [ResizeAction] and its other size parameters are behaviours for how resizing works.
  * This is generally important for fonts that scale up.
  */
-abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
+abstract class ToolboksGame(val logger: Logger, val logToFile: File?,
                             val version: Version,
                             val emulatedSize: Pair<Int, Int>, val resizeAction: ResizeAction,
                             val minimumSize: Pair<Int, Int>)
@@ -85,8 +86,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: Boolean,
     abstract val programLaunchArguments: List<String>
 
     override fun create() {
-        if (logToFile) {
-            SysOutPiper.pipe(programLaunchArguments, this)
+        if (logToFile != null) {
+            SysOutPiper.pipe(programLaunchArguments, this, logToFile)
         }
         Toolboks.LOGGER = logger
 

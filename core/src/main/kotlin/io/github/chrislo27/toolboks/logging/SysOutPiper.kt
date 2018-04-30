@@ -33,14 +33,13 @@ object SysOutPiper {
     @Volatile
     private var piped: Boolean = false
 
-    fun pipe(args: List<String>, game: ToolboksGame) {
+    fun pipe(args: List<String>, game: ToolboksGame, folder: File) {
         if (piped)
             return
         piped = true
         oldOut = System.out
         oldErr = System.err
 
-        val folder: File = File("logs/")
         folder.mkdir()
         val file: File = File(folder, "log_" + SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(
                 Date(System.currentTimeMillis())) + ".txt")
