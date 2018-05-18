@@ -205,6 +205,7 @@ Screen: ${screen?.javaClass?.canonicalName}
 ${getDebugString()}
 ${(screen as? ToolboksScreen<*, *>)?.getDebugString() ?: ""}"""
 
+                    font.setColor(1f, 1f, 1f, 1f)
                     font.drawCompressed(batch, string, 8f, Gdx.graphics.height - 8f, Gdx.graphics.width - 16f,
                                         Align.left)
 
