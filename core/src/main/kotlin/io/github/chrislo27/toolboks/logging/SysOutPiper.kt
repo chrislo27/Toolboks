@@ -40,7 +40,7 @@ object SysOutPiper {
         oldOut = System.out
         oldErr = System.err
 
-        folder.mkdir()
+        folder.mkdirs()
         val file: File = File(folder, "log_" + SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(
                 Date(System.currentTimeMillis())) + ".txt")
         file.createNewFile()
