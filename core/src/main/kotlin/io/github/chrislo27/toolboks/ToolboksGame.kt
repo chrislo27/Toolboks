@@ -123,8 +123,10 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: File?,
         // render update
         if (Gdx.input.isKeyJustReleased(Toolboks.DEBUG_KEY)) {
             if (shouldToggleDebugAfterPress) {
-                Toolboks.debugMode = !Toolboks.debugMode
-                Toolboks.LOGGER.debug("Switched debug mode to ${Toolboks.debugMode}")
+                val old = Toolboks.debugMode
+                Toolboks.debugMode = !old
+                onDebugChange(old, !old)
+                Toolboks.LOGGER.debug("Switched debug mode to ${!old}")
             }
             shouldToggleDebugAfterPress = true
         }
@@ -165,6 +167,9 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: File?,
      */
     open fun postRender() {
 
+    }
+
+    protected open fun onDebugChange(old: Boolean, new: Boolean) {
     }
 
     /**
