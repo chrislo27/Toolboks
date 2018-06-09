@@ -53,6 +53,8 @@ class TransitionScreen<G : ToolboksGame>(main: G,
         } else {
             ((timeElapsed - this.entryTransition.duration) / this.destTransition.duration).coerceIn(0f, 1f)
         }
+    val percentageCurrent: Float
+        get() = if (doneEntry) percentageDest else percentageEntry
     val done: Boolean
         get() = percentageTotal >= 1.0f
     val doneEntry: Boolean
@@ -62,11 +64,9 @@ class TransitionScreen<G : ToolboksGame>(main: G,
         super.render(delta)
         timeElapsed += delta
 
-        // Render screen
-        (if (doneEntry) destScreen else entryScreen)?.render(delta)
         // Render transition
         val transition = (if (doneEntry) destTransition else entryTransition)
-        transition.render(this)
+        transition.render(this, { (if (doneEntry) destScreen else entryScreen)?.render(delta) })
 
         if (transition.overrideDone) {
             timeElapsed = if (doneEntry) {

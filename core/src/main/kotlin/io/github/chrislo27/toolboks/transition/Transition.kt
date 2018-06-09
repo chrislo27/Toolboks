@@ -11,7 +11,7 @@ abstract class Transition(val duration: Float) : Disposable {
                 // NO-OP
             }
 
-            override fun render(transitionScreen: TransitionScreen<*>) {
+            override fun render(transitionScreen: TransitionScreen<*>, screenRender: () -> Unit) {
                 // NO-OP
             }
         }
@@ -20,6 +20,6 @@ abstract class Transition(val duration: Float) : Disposable {
     var overrideDone: Boolean = false
         private set
 
-    abstract fun render(transitionScreen: TransitionScreen<*>)
+    abstract fun render(transitionScreen: TransitionScreen<*>, screenRender: () -> Unit)
 
 }
