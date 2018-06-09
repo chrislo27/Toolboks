@@ -144,6 +144,8 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: File?,
                 Toolboks.LOGGER.debug("Toggled stage outlines to ${Toolboks.stageOutlines}")
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
                 System.gc()
+            } else if (checkDebugKeybind()) {
+
             } else {
                 pressed = false
             }
@@ -170,6 +172,10 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: File?,
     }
 
     protected open fun onDebugChange(old: Boolean, new: Boolean) {
+    }
+
+    protected open fun checkDebugKeybind(): Boolean {
+        return false
     }
 
     /**
