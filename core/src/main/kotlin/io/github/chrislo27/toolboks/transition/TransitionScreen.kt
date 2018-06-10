@@ -60,13 +60,20 @@ class TransitionScreen<G : ToolboksGame>(main: G,
     val doneEntry: Boolean
         get() = percentageEntry >= 1.0f
 
+    private var lastScreen: Screen? = entryScreen
+
     override fun render(delta: Float) {
         super.render(delta)
         timeElapsed += delta
 
         // Render transition
         val transition = (if (doneEntry) destTransition else entryTransition)
-        transition.render(this, { (if (doneEntry) destScreen else entryScreen)?.render(delta) })
+        val screen = (if (doneEntry) destScreen else entryScreen)
+        if (lastScreen != screen) {
+            screen?.show()
+            lastScreen = screen
+        }
+        transition.render(this, { screen?.render(delta) })
 
         if (transition.overrideDone) {
             timeElapsed = if (doneEntry) {
