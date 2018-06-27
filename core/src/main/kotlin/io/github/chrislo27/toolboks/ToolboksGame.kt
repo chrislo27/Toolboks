@@ -135,6 +135,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: File?,
             if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
                 val nano = measureNanoTime {
                     Localization.reloadAll(true)
+                    Localization.logMissingLocalizations()
                 }
                 Toolboks.LOGGER.debug("Reloaded I18N from files in ${nano / 1_000_000.0} ms")
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
