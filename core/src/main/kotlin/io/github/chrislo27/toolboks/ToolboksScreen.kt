@@ -60,6 +60,10 @@ public abstract class ToolboksScreen<G : ToolboksGame, SELF : ToolboksScreen<G, 
         main.inputMultiplexer.removeProcessor(this)
     }
 
+    open fun showTransition() {
+
+    }
+
     override fun pause() {
     }
 

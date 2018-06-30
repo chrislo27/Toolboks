@@ -70,7 +70,7 @@ class TransitionScreen<G : ToolboksGame>(main: G,
         val transition = (if (doneEntry) destTransition else entryTransition)
         val screen = (if (doneEntry) destScreen else entryScreen)
         if (lastScreen != screen) {
-            screen?.show()
+            (screen as? ToolboksScreen<*, *>)?.showTransition() ?: (screen?.show())
             lastScreen = screen
         }
         transition.render(this, { screen?.render(delta) })
