@@ -171,6 +171,10 @@ abstract class UIElement<S : ToolboksScreen<*, *>>
             return this
         }
 
+        fun set(other: UIRectangle): UIRectangle {
+            return set(other.screenX, other.screenY, other.screenWidth, other.screenHeight, other.pixelX, other.pixelY, other.pixelWidth, other.pixelHeight)
+        }
+
         var realX: Float = 0f
             private set
         var realY: Float = 0f
