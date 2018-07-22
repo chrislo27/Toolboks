@@ -94,6 +94,7 @@ abstract class ToolboksGame(val logger: Logger, val logToFile: File?,
         originalResolution = Pair(Gdx.graphics.width, Gdx.graphics.height)
         resetCamera()
         tickController.init(this)
+        tickController.registerHandler(this)
 
         val pixmap: Pixmap = Pixmap(1, 1, Pixmap.Format.RGBA8888)
         pixmap.setColor(1f, 1f, 1f, 1f)
